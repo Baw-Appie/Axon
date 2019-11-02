@@ -1,0 +1,49 @@
+{
+  "ENABLED_RESPRING" = "Enabled (Respring required)";
+  "VERTICAL" = "Vertical mode";
+  "VERTICAL_INFO" = "Rotates Axon by 90 deg, puts it to one of the sides and makes your notification smaller. Respring required. Experimental.";
+  "VERTICAL_RESPRING" = "Vertical (Respring required)";
+  "ENABLED" = "Enabled";
+  "HAPTIC_FEEDBACK" = "Haptic feedback";
+  "DARK_MODE" = "Dark mode";
+
+  "STYLE" = "Style";
+  "DEFAULT" = "Default";
+  "PACKED" = "Packed";
+  "COMPACT" = "Compact";
+  "TINY" = "Tiny";
+  "GROUP" = "Group (Beta, Respring required)";
+
+  "SHOW" = "Show by default";
+  "NOTHING" = "Nothing";
+  "LATEST_NOTIFICATION" = "Latest notification";
+  "FIRST_SECTION" = "First section";
+  "SELECTED_SECTION" = "Selected section";
+
+  "SORTING" = "Sorting";
+  "BY_DATE" = "Latest";
+  "BY_NAME" = "By app name";
+  "BY_COUNT" = "By count";
+
+  "SELECTION_STYLE" = "Selection style";
+  "BACKGROUND" = "Add background";
+  "DIM" = "Dim others";
+
+  "BADGES" = "Badges";
+  "SHOW_BACKGROUND" = "Show background";
+
+  "SPACING" = "Spacing";
+
+  "ALIGNMENT" = "Alignment";
+  "LEFT" = "Left";
+  "CENTER" = "Center";
+  "RIGHT" = "Right";
+
+  "CREDITS_1" = "Ahmed Bousrih";
+  "CREDITS_1_INFO" = "Designed the icon and banners.";
+
+  "RESPRING" = "Respring";
+  "SOURCE_CODE" = "Source code";
+  "DONATE_TO_NEPETA" = "Donate to Nepeta";
+  "SUPPORT_ME" = "Support me!";
+}

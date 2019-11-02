@@ -1,0 +1,10 @@
+{
+    entry = {
+	bundle = AxonPrefs;
+	cell = PSLinkCell;
+	detail = AXNPrefsListController;
+	isController = 1;
+	label = Axon;
+	icon = icon.png;
+    };
+}
