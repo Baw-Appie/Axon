@@ -174,9 +174,12 @@
         self.badgeLabel.backgroundColor = [UIColor clearColor];
         self.badgeLabel.textColor = [UIColor blackColor];
         [self addSubview:self.blurView];
+        [self addSubview:self.badgeLabel];
+        [self addSubview:self.iconView];
+    } else {
+        [self addSubview:self.iconView];
+        [self addSubview:self.badgeLabel];
     }
-    [self addSubview:self.badgeLabel];
-    [self addSubview:self.iconView];
 
     if (oldStyle != -1) [NSLayoutConstraint deactivateConstraints:_styleConstraints[oldStyle]];
     [NSLayoutConstraint activateConstraints:_styleConstraints[_style]];
