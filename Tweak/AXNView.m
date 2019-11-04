@@ -107,12 +107,12 @@
     cell.badgeLabel.hidden = !self.badgesEnabled;
     cell.style = self.style;
 
-    if(self.style == 4) {
-        self.collectionView.frame = CGRectMake(0, 0, self.collectionView.frame.size.width, 30);
-        self.superview.frame = CGRectMake(self.superview.frame.origin.x, self.superview.frame.origin.y, self.superview.frame.size.width, 30);
-        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, 30);
-        [self setNeedsDisplay];
-    }
+    // if(self.style == 4) {
+    //     self.collectionView.frame = CGRectMake(0, 0, self.collectionView.frame.size.width, 30);
+    //     // self.superview.frame = CGRectMake(self.superview.frame.origin.x, self.superview.frame.origin.y, self.superview.frame.size.width, 30);
+    //     // self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, 30);
+    //     [self setNeedsDisplay];
+    // }
 
     if (cell.selected) {
         [collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
