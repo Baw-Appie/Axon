@@ -337,8 +337,19 @@ void updateViewConfiguration() {
             [self.axnView.centerXAnchor constraintEqualToAnchor:stackView.centerXAnchor],
             [self.axnView.leadingAnchor constraintEqualToAnchor:stackView.leadingAnchor constant:10],
             [self.axnView.trailingAnchor constraintEqualToAnchor:stackView.trailingAnchor constant:-10],
-            [self.axnView.heightAnchor constraintEqualToConstant:90]
+            // [self.axnView.heightAnchor constraintEqualToConstant:90]
         ]];
+
+
+        if (style != 4) {
+            [NSLayoutConstraint activateConstraints:@[
+                [self.axnView.heightAnchor constraintEqualToConstant:90]
+            ]];
+        } else {
+            [NSLayoutConstraint activateConstraints:@[
+                [self.axnView.heightAnchor constraintEqualToConstant:30]
+            ]];
+        }
     }
 }
 

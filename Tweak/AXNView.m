@@ -176,7 +176,6 @@
 
     if (self.style == 2) width = 48;
     else if (self.style == 3) width = 40;
-    // else if (self.style == 4) width = 35;
 
     if (self.collectionViewLayout.scrollDirection == UICollectionViewScrollDirectionVertical) {
         width = 90;
