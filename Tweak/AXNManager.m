@@ -319,6 +319,12 @@
     [self hideNotificationRequests:[self.clvc allNotificationRequests]];
 }
 
+-(void)hideAllNotificationRequestsExcept:(id)notification {
+  NSMutableSet *set = [[self.clvc allNotificationRequests] mutableCopy];
+  [set removeObject:notification];
+  [self hideNotificationRequests:set];
+}
+
 -(void)revealNotificationHistory:(BOOL)revealed {
     [self.clvc revealNotificationHistory:revealed];
 }

@@ -37,6 +37,7 @@
 -(NSArray *)allRequestsForBundleIdentifier:(NSString *)bundleIdentifier;
 -(void)showNotificationRequestsForBundleIdentifier:(NSString *)bundleIdentifier;
 -(void)hideAllNotificationRequests;
+-(void)hideAllNotificationRequestsExcept:(id)notification;
 -(void)revealNotificationHistory:(BOOL)revealed;
 
 -(void)invalidateCountCache;

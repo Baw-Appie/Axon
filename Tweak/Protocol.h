@@ -8,7 +8,7 @@
 -(void)insertNotificationRequest:(id)arg1 forCoalescedNotification:(id)arg2 ;
 -(void)modifyNotificationRequest:(id)arg1 forCoalescedNotification:(id)arg2 ;
 -(void)removeNotificationRequest:(id)arg1 forCoalescedNotification:(id)arg2 ;
--(id)allNotificationRequests;
+-(NSSet *)allNotificationRequests;
 -(id)collectionView;
 -(void)revealNotificationHistory:(BOOL)revealed;
 

@@ -71,21 +71,19 @@
 
 - (void)reset {
     if (self.showByDefault == 3) return;
-
-    if (self.showByDefault == 2 && [self.list count] > 0 && [self.list[0][@"bundleIdentifier"] isEqualToString:self.selectedBundleIdentifier]) {
-        return;
-    }
+    if (self.showByDefault == 2 && [self.list count] > 0 && [self.list[0][@"bundleIdentifier"] isEqualToString:self.selectedBundleIdentifier]) return;
 
     self.showingLatestRequest = NO;
     self.selectedBundleIdentifier = nil;
-    [[AXNManager sharedInstance] hideAllNotificationRequests];
+    if(self.showByDefault != 1) [[AXNManager sharedInstance] hideAllNotificationRequests];
 
     switch (self.showByDefault) {
         case 1:
             if ([AXNManager sharedInstance].latestRequest) {
                 [[AXNManager sharedInstance] showNotificationRequest:[AXNManager sharedInstance].latestRequest];
+                [[AXNManager sharedInstance] hideAllNotificationRequestsExcept:[AXNManager sharedInstance].latestRequest];
                 self.showingLatestRequest = YES;
-            }
+            } else [[AXNManager sharedInstance] hideAllNotificationRequests];
             break;
         case 2:
             if ([self.list count] > 0) {
@@ -95,7 +93,7 @@
     }
 
     [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
-    [[AXNManager sharedInstance] revealNotificationHistory:NO];
+    [[AXNManager sharedInstance] revealNotificationHistory:true];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
