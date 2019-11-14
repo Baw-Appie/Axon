@@ -1,15 +1,17 @@
 #import <Preferences/PSListController.h>
 #import <Preferences/PSSpecifier.h>
-#import <CepheiPrefs/HBRootListController.h>
-#import <CepheiPrefs/HBAppearanceSettings.h>
-#import <Cephei/HBPreferences.h>
+// #import <CepheiPrefs/HBRootListController.h>
+// #import <CepheiPrefs/HBAppearanceSettings.h>
+// #import <Cephei/HBPreferences.h>
 #import "NSTask.h"
 
-@interface AXNAppearanceSettings : HBAppearanceSettings
+@interface AXNAppearanceSettings : PSListController
+// @interface AXNAppearanceSettings : HBAppearanceSettings
 
 @end
 
-@interface AXNPrefsListController : HBRootListController {
+// @interface AXNPrefsListController : HBRootListController {
+@interface AXNPrefsListController : PSListController {
     UITableView * _table;
 }
 

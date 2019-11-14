@@ -4,7 +4,7 @@
 <dict>
 	<key>items</key>
 	<array>
-		<dict>
+		<!-- <dict>
 			<key>cellClass</key>
 			<string>HBTwitterCell</string>
 			<key>label</key>
@@ -19,7 +19,7 @@
 			<string>Baw Appie</string>
 			<key>user</key>
 			<string>BawAppie</string>
-		</dict>
+		</dict> -->
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
@@ -371,7 +371,7 @@
 			<key>isStaticText</key>
 			<true/>
 		</dict>
-		<dict>
+		<!-- <dict>
 			<key>cellClass</key>
 			<string>HBLinkTableCell</string>
 			<key>label</key>
@@ -380,7 +380,7 @@
 			<string>CREDITS_1_INFO</string>
 			<key>url</key>
 			<string>https://twitter.com/bossgfx_</string>
-		</dict>
+		</dict> -->
 		<dict>
 			<key>action</key>
 			<string>respring:</string>
@@ -389,7 +389,7 @@
 			<key>label</key>
 			<string>RESPRING</string>
 		</dict>
-		<dict>
+		<!-- <dict>
 			<key>cellClass</key>
 			<string>HBLinkTableCell</string>
 			<key>label</key>
@@ -398,7 +398,7 @@
 			<string>SOURCE_CODE</string>
 			<key>url</key>
 			<string>https://github.com/Baw-Appie/Axon</string>
-		</dict>
+		</dict> -->
 	</array>
 	<key>title</key>
 	<string>Axon</string>
