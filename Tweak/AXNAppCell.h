@@ -1,3 +1,14 @@
+@interface MPArtworkColorAnalyzer : NSObject
+- (void)analyzeWithCompletionHandler:(id /* block */)arg1;
+- (id)initWithImage:(id)arg1 algorithm:(long long)arg2;
+@end
+
+@interface MPArtworkColorAnalysis : NSObject
+@property (nonatomic, readonly) UIColor *backgroundColor;
+@property (nonatomic, readonly) UIColor *primaryTextColor;
+@property (nonatomic, readonly) UIColor *secondaryTextColor;
+@end
+
 @interface AXNAppCell : UICollectionViewCell {
     NSArray *_styleConstraints;
 }

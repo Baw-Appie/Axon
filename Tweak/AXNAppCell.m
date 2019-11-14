@@ -1,6 +1,4 @@
 #import <AudioToolbox/AudioToolbox.h>
-#import <MediaPlayer/MPArtworkColorAnalyzer.h>
-#import <MediaPlayer/MPArtworkColorAnalysis.h>
 #import "AXNAppCell.h"
 #import "AXNManager.h"
 
@@ -176,8 +174,6 @@
         [self addSubview:self.blurView];
         [self addSubview:self.badgeLabel];
         [self addSubview:self.iconView];
-        [(AXNView *)self.superview collectionView].frame = CGRectMake(0, 0, [(AXNView *)self.superview collectionView].frame.size.width, 30);
-        [(AXNView *)self.superview setNeedsLayout];
     } else {
         [self addSubview:self.iconView];
         [self addSubview:self.badgeLabel];
