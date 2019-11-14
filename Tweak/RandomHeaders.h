@@ -1,9 +1,10 @@
+#import "Protocol.h"
 #import <WebKit/WebKit.h>
 
 @interface BBBulletin : NSObject
 
-@property (nonatomic,readonly) NSString * sectionDisplayName; 
-@property (nonatomic,copy) NSString * section; 
+@property (nonatomic,readonly) NSString * sectionDisplayName;
+@property (nonatomic,copy) NSString * section;
 @property (nonatomic,copy) NSString * sectionID;
 @property (nonatomic,copy) NSSet * subsectionIDs;
 @property (nonatomic,copy) NSString * recordID;
@@ -12,7 +13,7 @@
 @property (nonatomic,copy) NSString * categoryID;
 @property (nonatomic,copy) NSString * threadID;
 @property (nonatomic,copy) NSArray * peopleIDs;
-@property (nonatomic,copy) NSString * bulletinID;   
+@property (nonatomic,copy) NSString * bulletinID;
 
 @end
 
@@ -41,7 +42,7 @@
 
 @end
 
-@interface NCNotificationCombinedListViewController : UIViewController
+@interface NCNotificationCombinedListViewController : UIViewController <clvc>
 
 @property (nonatomic, assign) BOOL axnAllowChanges;
 -(id)allNotificationRequests;

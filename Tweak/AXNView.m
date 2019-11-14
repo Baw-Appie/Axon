@@ -146,7 +146,7 @@
     [[AXNManager sharedInstance] revealNotificationHistory:YES];
 
     if (self.collectionViewLayout.scrollDirection == UICollectionViewScrollDirectionVertical) {
-        [[[AXNManager sharedInstance].clvc collectionView] _scrollToTopIfPossible:YES];
+        if([[AXNManager sharedInstance].clvc respondsToSelector:@selector(collectionView)]) [[[AXNManager sharedInstance].clvc collectionView] _scrollToTopIfPossible:YES];
     }
 }
 

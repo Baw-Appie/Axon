@@ -56,7 +56,7 @@
                 count++;
                 continue;
             }
-            
+
             if (![coalescedNotifications containsObject:coalesced]) {
                 count += [coalesced.notificationRequests count];
                 [coalescedNotifications addObject:coalesced];
@@ -78,25 +78,28 @@
 
 -(UIImage *)getIcon:(NSString *)bundleIdentifier {
     if (self.iconStore[bundleIdentifier]) return self.iconStore[bundleIdentifier];
+    UIImage *image;
 
-    SBIconModel *model = [[(SBIconController *)[NSClassFromString(@"SBIconController") sharedInstance] homescreenIconViewMap] iconModel];
-    SBIcon *icon = [model applicationIconForBundleIdentifier:bundleIdentifier];
-    UIImage *image = [icon getIconImage:2];
+    if([[NSClassFromString(@"SBIconController") sharedInstance] respondsToSelector:@selector(homescreenIconViewMap)]) {
+      SBIconModel *model = [[(SBIconController *)[NSClassFromString(@"SBIconController") sharedInstance] homescreenIconViewMap] iconModel];
+      SBIcon *icon = [model applicationIconForBundleIdentifier:bundleIdentifier];
+      image = [icon getIconImage:2];
 
-    if (!image) {
-        NSArray *requests = [self requestsForBundleIdentifier:bundleIdentifier];
-        for (int i = 0; i < [requests count]; i++) {
-            NCNotificationRequest *request = requests[i];
-            if ([request.sectionIdentifier isEqualToString:bundleIdentifier] && request.content && request.content.icon) {
-                image = request.content.icon;
-                break;
-            }
-        }
-    }
+      if (!image) {
+          NSArray *requests = [self requestsForBundleIdentifier:bundleIdentifier];
+          for (int i = 0; i < [requests count]; i++) {
+              NCNotificationRequest *request = requests[i];
+              if ([request.sectionIdentifier isEqualToString:bundleIdentifier] && request.content && request.content.icon) {
+                  image = request.content.icon;
+                  break;
+              }
+          }
+      }
 
-    if (!image) {
-        icon = [model applicationIconForBundleIdentifier:@"com.apple.Preferences"];
-        image = [icon getIconImage:2];
+      if (!image) {
+          icon = [model applicationIconForBundleIdentifier:@"com.apple.Preferences"];
+          image = [icon getIconImage:2];
+      }
     }
 
     if (!image) {
@@ -172,7 +175,7 @@
             }
         }
     }
-    
+
     [self updateCountForBundleIdentifier:bundleIdentifier];
 }
 
@@ -226,7 +229,7 @@
     if ([self.dispatcher.notificationStore respondsToSelector:@selector(coalescedNotificationForRequest:)]) {
         NSMutableArray *allRequests = [NSMutableArray new];
         NSMutableArray *coalescedNotifications = [NSMutableArray new];
-        
+
         for (NCNotificationRequest *req in requests) {
             NCCoalescedNotification *coalesced = [self coalescedNotificationForRequest:req];
             if (!coalesced) {
@@ -243,7 +246,7 @@
                 }
                 continue;
             }
-            
+
             if (![coalescedNotifications containsObject:coalesced]) {
                 for (NCNotificationRequest *request in coalesced.notificationRequests) {
                     BOOL found = NO;
@@ -279,7 +282,8 @@
 -(void)showNotificationRequest:(NCNotificationRequest *)req {
     if (!req) return;
     self.clvc.axnAllowChanges = YES;
-    [self.clvc insertNotificationRequest:req forCoalescedNotification:[self coalescedNotificationForRequest:req]];
+    if ([self.clvc respondsToSelector:@selector(insertNotificationRequest:)]) [self.clvc insertNotificationRequest:req];
+    else [self.clvc insertNotificationRequest:req forCoalescedNotification:[self coalescedNotificationForRequest:req]];
     self.clvc.axnAllowChanges = NO;
 }
 
@@ -287,7 +291,8 @@
     if (!req) return;
     self.clvc.axnAllowChanges = YES;
     [self insertNotificationRequest:req];
-    [self.clvc removeNotificationRequest:req forCoalescedNotification:[self coalescedNotificationForRequest:req]];
+    if ([self.clvc respondsToSelector:@selector(removeNotificationRequest:)]) [self.clvc removeNotificationRequest:req];
+    else [self.clvc removeNotificationRequest:req forCoalescedNotification:[self coalescedNotificationForRequest:req]];
     self.clvc.axnAllowChanges = NO;
 
 }
@@ -315,11 +320,11 @@
 }
 
 -(void)revealNotificationHistory:(BOOL)revealed {
-    [self.clvc setDidPlayRevealHaptic:YES];
-    [self.clvc forceNotificationHistoryRevealed:revealed animated:NO];
-    [self.clvc setNotificationHistorySectionNeedsReload:YES];
-    [self.clvc _reloadNotificationHistorySectionIfNecessary];
-    if (!revealed && [self.clvc respondsToSelector:@selector(clearAllCoalescingControlsCells)]) [self.clvc clearAllCoalescingControlsCells];
+    // [self.clvc setDidPlayRevealHaptic:YES];
+    // [self.clvc forceNotificationHistoryRevealed:revealed animated:NO];
+    // [self.clvc setNotificationHistorySectionNeedsReload:YES];
+    // [self.clvc _reloadNotificationHistorySectionIfNecessary];
+    // if (!revealed && [self.clvc respondsToSelector:@selector(clearAllCoalescingControlsCells)]) [self.clvc clearAllCoalescingControlsCells];
 }
 
 @end

@@ -85,6 +85,14 @@ void updateViewConfiguration() {
 
 %end
 
+// iOS13 Support
+%hook CSNotificationAdjunctListViewController
+%property (nonatomic, retain) AXNView *axnView;
+-(BOOL)hasContent {
+    return YES;
+}
+%end
+
 #pragma mark Notification management
 
 %hook NCNotificationCombinedListViewController
@@ -142,7 +150,7 @@ void updateViewConfiguration() {
 
 -(bool)modifyNotificationRequest:(NCNotificationRequest *)req forCoalescedNotification:(id)arg2 {
     if (self.axnAllowChanges) return %orig;     // This condition is true when Axon is updating filtered notifications for display.
-    
+
     NSString *identifier = [[req notificationIdentifier] copy];
 
     [[AXNManager sharedInstance] modifyNotificationRequest:req];
@@ -199,6 +207,113 @@ void updateViewConfiguration() {
 
 %end
 
+// iOS13 Support
+@interface NCNotificationMasterList
+@property(retain, nonatomic) NSMutableArray *notificationSections;
+@end
+@interface NCNotificationStructuredSectionList
+@property (nonatomic,readonly) NSArray * allNotificationRequests;
+@end
+@interface NCNotificationStructuredListViewController <clvc>
+@property (nonatomic,assign) BOOL axnAllowChanges;
+@property (nonatomic,retain) NCNotificationMasterList * masterList;
+@end
+%hook NCNotificationStructuredListViewController
+%property (nonatomic,assign) BOOL axnAllowChanges;
+-(id)init {
+    %orig;
+    [AXNManager sharedInstance].clvc = self;
+    self.axnAllowChanges = NO;
+    return self;
+}
+-(bool)insertNotificationRequest:(NCNotificationRequest *)req {
+    if (self.axnAllowChanges) return %orig;     // This condition is true when Axon is updating filtered notifications for display.
+    [[AXNManager sharedInstance] insertNotificationRequest:req];
+    [[AXNManager sharedInstance].view refresh];
+
+    if (req.bulletin.sectionID) {
+        NSString *bundleIdentifier = req.bulletin.sectionID;
+        if ([bundleIdentifier isEqualToString:[AXNManager sharedInstance].view.selectedBundleIdentifier]) %orig;
+    }
+
+    if (![AXNManager sharedInstance].view.selectedBundleIdentifier && showByDefault == 1) {
+        [[AXNManager sharedInstance].view reset];
+    }
+
+    return YES;
+}
+
+-(bool)removeNotificationRequest:(NCNotificationRequest *)req {
+    if (self.axnAllowChanges) return %orig;     // This condition is true when Axon is updating filtered notifications for display.
+
+    NSString *identifier = [[req notificationIdentifier] copy];
+
+    [[AXNManager sharedInstance] removeNotificationRequest:req];
+    [[AXNManager sharedInstance].view refresh];
+
+    if (req.bulletin.sectionID) {
+        NSString *bundleIdentifier = req.bulletin.sectionID;
+        if ([bundleIdentifier isEqualToString:[AXNManager sharedInstance].view.selectedBundleIdentifier]) %orig;
+    }
+
+    if ([AXNManager sharedInstance].view.showingLatestRequest && identifier &&
+    [[[AXNManager sharedInstance].latestRequest notificationIdentifier] isEqualToString:identifier]) {
+        %orig;
+    }
+
+    return YES;
+}
+
+-(bool)modifyNotificationRequest:(NCNotificationRequest *)req {
+    if (self.axnAllowChanges) return %orig;     // This condition is true when Axon is updating filtered notifications for display.
+
+    NSString *identifier = [[req notificationIdentifier] copy];
+
+    [[AXNManager sharedInstance] modifyNotificationRequest:req];
+    [[AXNManager sharedInstance].view refresh];
+
+    if (req.bulletin.sectionID) {
+        NSString *bundleIdentifier = req.bulletin.sectionID;
+        if ([bundleIdentifier isEqualToString:[AXNManager sharedInstance].view.selectedBundleIdentifier]) %orig;
+    }
+
+    if ([AXNManager sharedInstance].view.showingLatestRequest && identifier &&
+    [[[AXNManager sharedInstance].latestRequest notificationIdentifier] isEqualToString:identifier]) {
+        %orig;
+    }
+
+    return YES;
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+    %orig;
+    [[AXNManager sharedInstance].view reset];
+    [[AXNManager sharedInstance].view refresh];
+}
+
+%new
+-(id)axnNotificationRequests {
+    NSMutableOrderedSet *allRequests = [NSMutableOrderedSet new];
+    for (NSString *key in [[AXNManager sharedInstance].notificationRequests allKeys]) {
+        [allRequests addObjectsFromArray:[[AXNManager sharedInstance] requestsForBundleIdentifier:key]];
+    }
+    return allRequests;
+}
+
+%new
+-(NSSet *)allNotificationRequests {
+  NSArray *array = [NSMutableArray new];
+
+  NCNotificationMasterList *masterList = [self masterList];
+  for(NCNotificationStructuredSectionList *item in [masterList notificationSections]) {
+    array = [array arrayByAddingObjectsFromArray:[item allNotificationRequests]];
+  }
+
+  return [[NSSet alloc] initWithArray:array];
+}
+
+%end
+
 #pragma mark Compatibility stuff
 
 %hook NCNotificationListViewController
@@ -245,6 +360,16 @@ void updateViewConfiguration() {
 }
 
 %end
+
+// iOS13 Support
+%hook CSPageViewController
+-(void)viewWillAppear:(BOOL)animated {
+    %orig;
+    [[AXNManager sharedInstance].view reset];
+    [[AXNManager sharedInstance].view refresh];
+}
+%end
+
 
 %end
 
@@ -303,6 +428,41 @@ void updateViewConfiguration() {
 
 %end
 
+// iOS 13 Support
+%hook CSCombinedListViewController
+%property (nonatomic, retain) AXNView *axnView;
+-(void)viewDidLoad{
+    %orig;
+    if (!initialized) {
+        initialized = YES;
+        self.axnView = [[AXNView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 96, 0, 96, 500)];
+        self.axnView.translatesAutoresizingMaskIntoConstraints = NO;
+        self.axnView.collectionViewLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
+        [AXNManager sharedInstance].view = self.axnView;
+        updateViewConfiguration();
+
+        [self.view addSubview:self.axnView];
+
+        [NSLayoutConstraint activateConstraints:@[
+            [self.axnView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
+            [self.axnView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor],
+            [self.axnView.widthAnchor constraintEqualToConstant:90]
+        ]];
+
+        if (verticalPosition == 0) {
+            [NSLayoutConstraint activateConstraints:@[
+                [self.axnView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+            ]];
+        } else {
+            [NSLayoutConstraint activateConstraints:@[
+                [self.axnView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+            ]];
+        }
+    }
+    [AXNManager sharedInstance].sbclvc = self;
+}
+%end
+
 %end
 
 %group AxonHorizontal
@@ -314,6 +474,14 @@ void updateViewConfiguration() {
     [AXNManager sharedInstance].sbclvc = self;
 }
 
+%end
+
+// iOS 13 Support
+%hook CSCombinedListViewController
+-(void)viewDidLoad{
+    %orig;
+    [AXNManager sharedInstance].sbclvc = self;
+}
 %end
 
 %hook SBDashBoardNotificationAdjunctListViewController
@@ -376,6 +544,60 @@ void updateViewConfiguration() {
 }
 
 %end
+
+%hook CSNotificationAdjunctListViewController
+%property (nonatomic, retain) AXNView *axnView;
+-(void)viewDidLoad {
+    %orig;
+
+    if (!initialized) {
+        initialized = YES;
+        UIStackView *stackView = [self valueForKey:@"_stackView"];
+        self.axnView = [[AXNView alloc] initWithFrame:CGRectMake(0,0,64,90)];
+        self.axnView.translatesAutoresizingMaskIntoConstraints = NO;
+        [AXNManager sharedInstance].view = self.axnView;
+        updateViewConfiguration();
+
+        [stackView addArrangedSubview:self.axnView];
+
+        [NSLayoutConstraint activateConstraints:@[
+            [self.axnView.centerXAnchor constraintEqualToAnchor:stackView.centerXAnchor],
+            [self.axnView.leadingAnchor constraintEqualToAnchor:stackView.leadingAnchor constant:10],
+            [self.axnView.trailingAnchor constraintEqualToAnchor:stackView.trailingAnchor constant:-10],
+            // [self.axnView.heightAnchor constraintEqualToConstant:90]
+        ]];
+
+
+        if (style != 4) {
+            [NSLayoutConstraint activateConstraints:@[
+                [self.axnView.heightAnchor constraintEqualToConstant:90]
+            ]];
+        } else {
+            [NSLayoutConstraint activateConstraints:@[
+                [self.axnView.heightAnchor constraintEqualToConstant:30]
+            ]];
+        }
+    }
+}
+
+-(void)_updatePresentingContent {
+    %orig;
+    UIStackView *stackView = [self valueForKey:@"_stackView"];
+    [stackView removeArrangedSubview:self.axnView];
+    [stackView addArrangedSubview:self.axnView];
+}
+-(void)_insertItem:(id)arg1 animated:(BOOL)arg2 {
+    %orig;
+    UIStackView *stackView = [self valueForKey:@"_stackView"];
+    [stackView removeArrangedSubview:self.axnView];
+    [stackView addArrangedSubview:self.axnView];
+}
+
+-(BOOL)isPresentingContent {
+    return YES;
+}
+%end
+
 
 %end
 
@@ -455,7 +677,7 @@ static void displayStatusChanged(CFNotificationCenterRef center, void *observer,
 
     if (!dpkgInvalid && enabled) {
         BOOL ok = false;
-        
+
         ok = ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/var/lib/dpkg/info/%@%@%@%@%@%@%@%@%@.axon.md5sums", @"m", @"e", @".", @"n", @"e", @"p", @"e", @"t", @"a"]]
                 /* &&
                 ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/private/var/lib/apt/lists/repo.%@%@%@%@%@%@.me_._Release", @"n", @"e", @"p", @"e", @"t", @"a"]] ||

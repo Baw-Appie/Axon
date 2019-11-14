@@ -1,5 +1,6 @@
 #import "AXNView.h"
 #import "RandomHeaders.h"
+#import "Protocol.h"
 
 @interface AXNManager : NSObject
 
@@ -13,8 +14,8 @@
 @property (nonatomic, retain) UIColor *fallbackColor;
 @property (nonatomic, weak) NCNotificationRequest *latestRequest;
 @property (nonatomic, weak) AXNView *view;
-@property (nonatomic, weak) NCNotificationCombinedListViewController *clvc;
-@property (nonatomic, weak) SBDashBoardCombinedListViewController *sbclvc;
+@property (nonatomic, weak) id<clvc> clvc;
+@property (nonatomic, weak) id sbclvc;
 @property (nonatomic, weak) NCNotificationDispatcher *dispatcher;
 
 +(instancetype)sharedInstance;
