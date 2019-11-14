@@ -226,49 +226,49 @@
 -(NSArray *)allRequestsForBundleIdentifier:(NSString *)bundleIdentifier {
     NSArray *requests = [self requestsForBundleIdentifier:bundleIdentifier];
 
-    if ([self.dispatcher.notificationStore respondsToSelector:@selector(coalescedNotificationForRequest:)]) {
-        NSMutableArray *allRequests = [NSMutableArray new];
-        NSMutableArray *coalescedNotifications = [NSMutableArray new];
-
-        for (NCNotificationRequest *req in requests) {
-            NCCoalescedNotification *coalesced = [self coalescedNotificationForRequest:req];
-            if (!coalesced) {
-                BOOL found = NO;
-                for (int i = 0; i < [allRequests count]; i++) {
-                    if ([[req notificationIdentifier] isEqualToString:[allRequests[i] notificationIdentifier]]) {
-                        found = YES;
-                        break;
-                    }
-                }
-
-                if (!found) {
-                    [allRequests addObject:req];
-                }
-                continue;
-            }
-
-            if (![coalescedNotifications containsObject:coalesced]) {
-                for (NCNotificationRequest *request in coalesced.notificationRequests) {
-                    BOOL found = NO;
-                    for (int i = 0; i < [allRequests count]; i++) {
-                        if ([[request notificationIdentifier] isEqualToString:[allRequests[i] notificationIdentifier]]) {
-                            found = YES;
-                            break;
-                        }
-                    }
-
-                    if (!found) {
-                        [allRequests addObject:request];
-                    }
-                }
-                [coalescedNotifications addObject:coalesced];
-            }
-        }
-
-        return allRequests;
-    } else {
+    // if ([self.dispatcher.notificationStore respondsToSelector:@selector(coalescedNotificationForRequest:)]) {
+    //     NSMutableArray *allRequests = [NSMutableArray new];
+    //     NSMutableArray *coalescedNotifications = [NSMutableArray new];
+    //
+    //     for (NCNotificationRequest *req in requests) {
+    //         NCCoalescedNotification *coalesced = [self coalescedNotificationForRequest:req];
+    //         if (!coalesced) {
+    //             BOOL found = NO;
+    //             for (int i = 0; i < [allRequests count]; i++) {
+    //                 if ([[req notificationIdentifier] isEqualToString:[allRequests[i] notificationIdentifier]]) {
+    //                     found = YES;
+    //                     break;
+    //                 }
+    //             }
+    //
+    //             if (!found) {
+    //                 [allRequests addObject:req];
+    //             }
+    //             continue;
+    //         }
+    //
+    //         if (![coalescedNotifications containsObject:coalesced]) {
+    //             for (NCNotificationRequest *request in coalesced.notificationRequests) {
+    //                 BOOL found = NO;
+    //                 for (int i = 0; i < [allRequests count]; i++) {
+    //                     if ([[request notificationIdentifier] isEqualToString:[allRequests[i] notificationIdentifier]]) {
+    //                         found = YES;
+    //                         break;
+    //                     }
+    //                 }
+    //
+    //                 if (!found) {
+    //                     [allRequests addObject:request];
+    //                 }
+    //             }
+    //             [coalescedNotifications addObject:coalesced];
+    //         }
+    //     }
+    //
+    //     return allRequests;
+    // } else {
         return requests;
-    }
+    // }
 }
 
 -(id)coalescedNotificationForRequest:(id)req {
@@ -282,8 +282,8 @@
 -(void)showNotificationRequest:(NCNotificationRequest *)req {
     if (!req) return;
     self.clvc.axnAllowChanges = YES;
-    if ([self.clvc respondsToSelector:@selector(insertNotificationRequest:)]) [self.clvc insertNotificationRequest:req];
-    else [self.clvc insertNotificationRequest:req forCoalescedNotification:[self coalescedNotificationForRequest:req]];
+    if ([self.clvc respondsToSelector:@selector(insertNotificationRequest:forCoalescedNotification:)]) [self.clvc insertNotificationRequest:req forCoalescedNotification:[self coalescedNotificationForRequest:req]];
+    else [self.clvc insertNotificationRequest:req];
     self.clvc.axnAllowChanges = NO;
 }
 
@@ -291,8 +291,8 @@
     if (!req) return;
     self.clvc.axnAllowChanges = YES;
     [self insertNotificationRequest:req];
-    if ([self.clvc respondsToSelector:@selector(removeNotificationRequest:)]) [self.clvc removeNotificationRequest:req];
-    else [self.clvc removeNotificationRequest:req forCoalescedNotification:[self coalescedNotificationForRequest:req]];
+    if ([self.clvc respondsToSelector:@selector(removeNotificationRequest:forCoalescedNotification:)]) [self.clvc removeNotificationRequest:req forCoalescedNotification:[self coalescedNotificationForRequest:req]];
+    else [self.clvc removeNotificationRequest:req];
     self.clvc.axnAllowChanges = NO;
 
 }
@@ -320,11 +320,7 @@
 }
 
 -(void)revealNotificationHistory:(BOOL)revealed {
-    // [self.clvc setDidPlayRevealHaptic:YES];
-    // [self.clvc forceNotificationHistoryRevealed:revealed animated:NO];
-    // [self.clvc setNotificationHistorySectionNeedsReload:YES];
-    // [self.clvc _reloadNotificationHistorySectionIfNecessary];
-    // if (!revealed && [self.clvc respondsToSelector:@selector(clearAllCoalescingControlsCells)]) [self.clvc clearAllCoalescingControlsCells];
+    [self.clvc revealNotificationHistory:revealed];
 }
 
 @end

@@ -88,9 +88,6 @@ void updateViewConfiguration() {
 // iOS13 Support
 %hook CSNotificationAdjunctListViewController
 %property (nonatomic, retain) AXNView *axnView;
--(BOOL)hasContent {
-    return YES;
-}
 %end
 
 #pragma mark Notification management
@@ -205,6 +202,15 @@ void updateViewConfiguration() {
     return allRequests;
 }
 
+%new
+-(void)revealNotificationHistory:(BOOL)revealed {
+  [self setDidPlayRevealHaptic:YES];
+  [self forceNotificationHistoryRevealed:revealed animated:NO];
+  [self setNotificationHistorySectionNeedsReload:YES];
+  [self _reloadNotificationHistorySectionIfNecessary];
+  if (!revealed && [self respondsToSelector:@selector(clearAllCoalescingControlsCells)]) [self clearAllCoalescingControlsCells];
+}
+
 %end
 
 // iOS13 Support
@@ -217,6 +223,7 @@ void updateViewConfiguration() {
 @interface NCNotificationStructuredListViewController <clvc>
 @property (nonatomic,assign) BOOL axnAllowChanges;
 @property (nonatomic,retain) NCNotificationMasterList * masterList;
+-(void)revealNotificationHistory:(BOOL)arg1 animated:(BOOL)arg2 ;
 @end
 %hook NCNotificationStructuredListViewController
 %property (nonatomic,assign) BOOL axnAllowChanges;
@@ -303,13 +310,16 @@ void updateViewConfiguration() {
 %new
 -(NSSet *)allNotificationRequests {
   NSArray *array = [NSMutableArray new];
-
   NCNotificationMasterList *masterList = [self masterList];
   for(NCNotificationStructuredSectionList *item in [masterList notificationSections]) {
     array = [array arrayByAddingObjectsFromArray:[item allNotificationRequests]];
   }
-
   return [[NSSet alloc] initWithArray:array];
+}
+
+%new
+-(void)revealNotificationHistory:(BOOL)revealed {
+  [self revealNotificationHistory:revealed animated:true];
 }
 
 %end

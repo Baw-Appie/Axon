@@ -10,5 +10,6 @@
 -(void)removeNotificationRequest:(id)arg1 forCoalescedNotification:(id)arg2 ;
 -(id)allNotificationRequests;
 -(id)collectionView;
+-(void)revealNotificationHistory:(BOOL)revealed;
 
 @end
