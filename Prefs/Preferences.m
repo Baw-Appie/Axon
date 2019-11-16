@@ -50,6 +50,11 @@
 - (id)specifiers {
     if(_specifiers == nil) {
         _specifiers = [[self loadSpecifiersFromPlistName:@"Prefs" target:self] retain];
+        BOOL iOS13 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 13;
+        for (PSSpecifier *specifier in _specifiers) {
+    			if([[specifier propertyForKey:@"id"] isEqualToString:@"BADGES"] && iOS13) [specifier setProperty:@"Note: Some features are not available for iOS 13 and later." forKey:@"footerText"];
+    			if([[specifier propertyForKey:@"id"] isEqualToString:@"SHOW_BACKGROUND"] && iOS13) [specifier setProperty:@NO forKey:@"enabled"];
+    		}
     }
     return _specifiers;
 }

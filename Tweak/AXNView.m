@@ -36,10 +36,6 @@
     return self;
 }
 
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
-    return 9999;
-}
-
 - (void)viewDidLayoutSubviews {
   [self.collectionView.collectionViewLayout invalidateLayout];
 }
@@ -93,7 +89,7 @@
     }
 
     [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
-    [[AXNManager sharedInstance] revealNotificationHistory:true];
+    [[AXNManager sharedInstance] revealNotificationHistory:false];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {

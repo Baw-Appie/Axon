@@ -125,18 +125,20 @@
     self.badgeLabel.backgroundColor = [UIColor clearColor];
     if(_style != 4) self.badgeLabel.textColor = [[AXNManager sharedInstance] fallbackColor];
 
-    if (self.badgesShowBackground && self.iconView.image) {
+    BOOL iOS13 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 13;
+
+    if (self.badgesShowBackground && self.iconView.image && !iOS13 && _style != 4) {
         if ([AXNManager sharedInstance].backgroundColorCache[value] && [AXNManager sharedInstance].textColorCache[value]) {
-            if(_style != 4) self.badgeLabel.backgroundColor = [[AXNManager sharedInstance].backgroundColorCache[value] copy];
-            if(_style != 4) self.badgeLabel.textColor = [[AXNManager sharedInstance].textColorCache[value] copy];
+            self.badgeLabel.backgroundColor = [[AXNManager sharedInstance].backgroundColorCache[value] copy];
+            self.badgeLabel.textColor = [[AXNManager sharedInstance].textColorCache[value] copy];
         } else {
             __weak AXNAppCell *weakSelf = self;
             MPArtworkColorAnalyzer *colorAnalyzer = [[MPArtworkColorAnalyzer alloc] initWithImage:self.iconView.image algorithm:0];
             [colorAnalyzer analyzeWithCompletionHandler:^(MPArtworkColorAnalyzer *analyzer, MPArtworkColorAnalysis *analysis) {
                 [AXNManager sharedInstance].backgroundColorCache[value] = [analysis.backgroundColor copy];
                 [AXNManager sharedInstance].textColorCache[value] = [analysis.primaryTextColor copy];
-                if(_style != 4) [weakSelf badgeLabel].backgroundColor = [analysis.backgroundColor copy];
-                if(_style != 4) [weakSelf badgeLabel].textColor = [analysis.primaryTextColor copy];
+                [weakSelf badgeLabel].backgroundColor = [analysis.backgroundColor copy];
+                [weakSelf badgeLabel].textColor = [analysis.primaryTextColor copy];
             }];
         }
     }
