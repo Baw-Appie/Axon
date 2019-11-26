@@ -382,7 +382,11 @@ void updateViewConfiguration() {
 
 
 %end
-
+@interface NCNotificationContentView : NSObject
+@end
+@interface UIView (Private)
+-(NSArray *)allSubviews;
+@end
 %group AxonVertical
 
 %hook NCNotificationCombinedListViewController
@@ -394,11 +398,26 @@ void updateViewConfiguration() {
     else return UIEdgeInsetsMake(0, 0, 0, -96);
 }
 
--(CGSize)collectionView:(id)arg1 layout:(id)arg2 sizeForItemAtIndexPath:(id)arg3 {
+-(CGSize)collectionView:(UICollectionView *)arg1 layout:(UICollectionViewLayout*)arg2 sizeForItemAtIndexPath:(id)arg3 {
     CGSize orig = %orig;
+    UIView *view = [arg1 cellForItemAtIndexPath:arg3].contentView;
+    for(id item in view.allSubviews) {
+      if([item isKindOfClass:[objc_getClass("NCNotificationContentView") class]]) {
+        return CGSizeMake(orig.width - 96, ((UIView *)item).frame.size.height+30);
+      }
+    }
     return CGSizeMake(orig.width - 96, orig.height);
 }
 
+%end
+
+// iOS 13 Support
+%hook NCNotificationStructuredListViewController
+%property (nonatomic,assign) BOOL axnAllowChanges;
+-(UIEdgeInsets)insetMargins {
+    if (verticalPosition == 0) return UIEdgeInsetsMake(0, -96, 0, 0);
+    else return UIEdgeInsetsMake(0, 0, 0, -96);
+}
 %end
 
 %hook SBDashBoardCombinedListViewController
