@@ -79,27 +79,32 @@
 -(UIImage *)getIcon:(NSString *)bundleIdentifier {
     if (self.iconStore[bundleIdentifier]) return self.iconStore[bundleIdentifier];
     UIImage *image;
+    SBIconModel *model;
 
-    if([[NSClassFromString(@"SBIconController") sharedInstance] respondsToSelector:@selector(homescreenIconViewMap)]) {
-      SBIconModel *model = [[(SBIconController *)[NSClassFromString(@"SBIconController") sharedInstance] homescreenIconViewMap] iconModel];
-      SBIcon *icon = [model applicationIconForBundleIdentifier:bundleIdentifier];
-      image = [icon getIconImage:2];
+    SBIconController *iconController = [NSClassFromString(@"SBIconController") sharedInstance];
 
-      if (!image) {
-          NSArray *requests = [self requestsForBundleIdentifier:bundleIdentifier];
-          for (int i = 0; i < [requests count]; i++) {
-              NCNotificationRequest *request = requests[i];
-              if ([request.sectionIdentifier isEqualToString:bundleIdentifier] && request.content && request.content.icon) {
-                  image = request.content.icon;
-                  break;
-              }
-          }
-      }
+    if([iconController respondsToSelector:@selector(homescreenIconViewMap)]) model = [[iconController homescreenIconViewMap] iconModel];
+    else if([iconController respondsToSelector:@selector(model)]) model = [iconController model];
+    SBIcon *icon = [model applicationIconForBundleIdentifier:bundleIdentifier];
+    if([icon respondsToSelector:@selector(getIconImage:)]) image = [icon getIconImage:2];
+    else if([icon respondsToSelector:@selector(iconImageWithInfo:)]) image = [icon iconImageWithInfo:(struct SBIconImageInfo){60,60,2,0}];
 
-      if (!image) {
-          icon = [model applicationIconForBundleIdentifier:@"com.apple.Preferences"];
-          image = [icon getIconImage:2];
-      }
+    if (!image) {
+      NSLog(@"[Axon] Image Not Founded!");
+        NSArray *requests = [self requestsForBundleIdentifier:bundleIdentifier];
+        for (int i = 0; i < [requests count]; i++) {
+            NCNotificationRequest *request = requests[i];
+            if ([request.sectionIdentifier isEqualToString:bundleIdentifier] && request.content && request.content.icon) {
+                image = request.content.icon;
+                break;
+            }
+        }
+    }
+
+    if (!image && model) {
+        icon = [model applicationIconForBundleIdentifier:@"com.apple.Preferences"];
+        if([icon respondsToSelector:@selector(getIconImage:)]) image = [icon getIconImage:2];
+        else if([icon respondsToSelector:@selector(iconImageWithInfo:)]) image = [icon iconImageWithInfo:(struct SBIconImageInfo){60,60,2,0}];
     }
 
     if (!image) {

@@ -97,7 +97,15 @@
 
 @interface SBIcon : NSObject
 
+struct SBIconImageInfo {
+   CGFloat width;
+   CGFloat height;
+   CGFloat field1;
+   CGFloat field2;
+};
+
 -(UIImage *)getIconImage:(int)arg1 ;
+-(UIImage *)iconImageWithInfo:(struct SBIconImageInfo)info;
 
 @end
 
@@ -118,6 +126,7 @@
 @property (nonatomic, retain) WKWebView *axnIntegrityView;
 +(id)sharedInstance;
 -(SBIconViewMap *)homescreenIconViewMap;
+-(SBIconModel *)model;
 
 @end
 
