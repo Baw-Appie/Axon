@@ -91,6 +91,10 @@
     return self;
 }
 
+-(UISemanticContentAttribute)semanticContentAttribute {
+  return UISemanticContentAttributeForceLeftToRight;
+}
+
 -(void)axnClearAll {
     [[AXNManager sharedInstance] clearAll:self.bundleIdentifier];
 }
