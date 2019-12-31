@@ -131,11 +131,28 @@
 
     BOOL iOS13 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 13;
 
-    if (self.badgesShowBackground && self.iconView.image && !iOS13 && _style != 4) {
+    if (self.badgesShowBackground && self.iconView.image && _style != 4) {
         if ([AXNManager sharedInstance].backgroundColorCache[value] && [AXNManager sharedInstance].textColorCache[value]) {
             self.badgeLabel.backgroundColor = [[AXNManager sharedInstance].backgroundColorCache[value] copy];
             self.badgeLabel.textColor = [[AXNManager sharedInstance].textColorCache[value] copy];
         } else {
+          if(iOS13) {
+            CGSize size = {1, 1};
+            UIGraphicsBeginImageContext(size);
+            CGContextRef ctx = UIGraphicsGetCurrentContext();
+            CGContextSetInterpolationQuality(ctx, kCGInterpolationMedium);
+            [[self.iconView.image copy] drawInRect:(CGRect){.size = size} blendMode:kCGBlendModeCopy alpha:1];
+            uint8_t *data = CGBitmapContextGetData(ctx);
+            UIColor *backgroundColor = [UIColor colorWithRed:data[2] / 255.0f green:data[1] / 255.0f blue:data[0] / 255.0f alpha:1];
+            UIGraphicsEndImageContext();
+            CGFloat red = 0.0, green = 0.0, blue = 0.0, alpha = 0.0;
+            [backgroundColor getRed:&red green:&green blue:&blue alpha:&alpha];
+            int threshold = 105;
+            int bgDelta = ((red * 0.299) + (green * 0.587) + (blue * 0.114));
+            UIColor *textColor = (255 - bgDelta < threshold) ? [UIColor blackColor] : [UIColor whiteColor];
+            self.badgeLabel.backgroundColor = [backgroundColor copy];
+            self.badgeLabel.textColor = [textColor copy];
+          } else {
             __weak AXNAppCell *weakSelf = self;
             MPArtworkColorAnalyzer *colorAnalyzer = [[MPArtworkColorAnalyzer alloc] initWithImage:self.iconView.image algorithm:0];
             [colorAnalyzer analyzeWithCompletionHandler:^(MPArtworkColorAnalyzer *analyzer, MPArtworkColorAnalysis *analysis) {
@@ -144,6 +161,7 @@
                 [weakSelf badgeLabel].backgroundColor = [analysis.backgroundColor copy];
                 [weakSelf badgeLabel].textColor = [analysis.primaryTextColor copy];
             }];
+          }
         }
     }
 }
