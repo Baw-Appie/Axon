@@ -223,20 +223,10 @@
 }
 -(void)setDarkMode:(BOOL)darkMode {
     if (_darkMode == darkMode) return;
-
-    // if(_style == 4) {
-      // UIVisualEffectView *view = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:darkMode ? UIBlurEffectStyleDark : UIBlurEffectStyleLight]];
-      // view.frame = self.blurView.frame;
-      //
-      // self.blurView = view;
-
-      [self.blurView setEffect:[UIBlurEffect effectWithStyle:darkMode ? UIBlurEffectStyleDark : UIBlurEffectStyleLight]];
-      self.badgeLabel.textColor = darkMode ? [UIColor whiteColor] : [UIColor blackColor];
-      self.badgeLabel.alpha = 0.4f;
-
-      // self.blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
-      // self.blurView.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
-    // }
+    
+    [self.blurView setEffect:[UIBlurEffect effectWithStyle:darkMode ? UIBlurEffectStyleDark : UIBlurEffectStyleLight]];
+    self.badgeLabel.textColor = darkMode ? [UIColor whiteColor] : [UIColor blackColor];
+    self.badgeLabel.alpha = 0.4f;
 
     [self setNeedsDisplay];
 }
