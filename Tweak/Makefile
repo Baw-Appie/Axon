@@ -1,6 +1,8 @@
 ARCHS = arm64 arm64e
 TARGET = iphone:12.2:12.2
 
+INSTALL_TARGET_PROCESSES = SpringBoard
+
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = Axon
