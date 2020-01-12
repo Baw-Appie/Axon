@@ -35,6 +35,15 @@ void updateViewConfiguration() {
 
 %group Axon
 
+%hook NCNotificationListSectionHeaderView
+-(CGRect)frame {
+  return CGRectMake(0,0,0,0);
+}
+-(BOOL)hidden {
+  return true;
+}
+%end
+
 #pragma mark Legibility color
 
 %hook SBFLockScreenDateView
