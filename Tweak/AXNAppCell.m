@@ -111,13 +111,27 @@
     if (sender.state == UIGestureRecognizerStateBegan) {
         AudioServicesPlaySystemSound(1519);
 
-        [self becomeFirstResponder];
-        UIMenuController *menu = [UIMenuController sharedMenuController];
-        menu.menuItems = @[
-            [[UIMenuItem alloc] initWithTitle:@"Clear All" action:@selector(axnClearAll)],
-        ];
-        [menu setTargetRect:self.bounds inView:self];
-        [menu setMenuVisible:YES animated:YES];
+        float version = [[[UIDevice currentDevice] systemVersion] floatValue];
+
+        if(version >= 13) {
+          UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Notification Option" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+      		[alert addAction:[UIAlertAction actionWithTitle:@"Clear All" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+            [self axnClearAll];
+      		}]];
+        	[alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        	}]];
+          UIResponder *responder = self;
+          while ([responder isKindOfClass:[UIView class]]) responder = [responder nextResponder];
+          [(UIViewController *)responder presentViewController:alert animated:YES completion:nil];
+        } else {
+          [self becomeFirstResponder];
+          UIMenuController *menu = [UIMenuController sharedMenuController];
+          menu.menuItems = @[
+              [[UIMenuItem alloc] initWithTitle:@"Clear All" action:@selector(axnClearAll)],
+          ];
+          [menu setTargetRect:self.bounds inView:self];
+          [menu setMenuVisible:YES animated:YES];
+        }
     }
 }
 
