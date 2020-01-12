@@ -229,6 +229,7 @@
 
 -(void)setSelected:(BOOL)selected {
     [super setSelected:selected];
+    if(self.selectionStyle == 2) return;
 
     if (selected) {
         [UIView animateWithDuration:0.15 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{

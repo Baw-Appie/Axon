@@ -245,11 +245,13 @@
 			<array>
 				<integer>0</integer>
 				<integer>1</integer>
+				<integer>2</integer>
 			</array>
 			<key>validTitles</key>
 			<array>
 				<string>BACKGROUND</string>
 				<string>DIM</string>
+				<string>NONE</string>
 			</array>
 			<key>alignment</key>
 			<string>2</string>

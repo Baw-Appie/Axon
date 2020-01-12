@@ -28,6 +28,7 @@
   "SELECTION_STYLE" = "Selection style";
   "BACKGROUND" = "Add background";
   "DIM" = "Dim others";
+  "NONE" = "None";
 
   "BADGES" = "Badges";
   "SHOW_BACKGROUND" = "Show background";
