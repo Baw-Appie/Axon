@@ -391,6 +391,14 @@
 			<key>label</key>
 			<string>RESPRING</string>
 		</dict>
+		<dict>
+			<key>detail</key>
+			<string>AXNDebugController</string>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>label</key>
+			<string>DEBUG</string>
+		</dict>
 		<!-- <dict>
 			<key>cellClass</key>
 			<string>HBLinkTableCell</string>

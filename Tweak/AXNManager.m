@@ -8,7 +8,7 @@
     static AXNManager *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [AXNManager alloc];
+        sharedInstance = [[AXNManager alloc] init];
         sharedInstance.names = [NSMutableDictionary new];
         sharedInstance.timestamps = [NSMutableDictionary new];
         sharedInstance.notificationRequests = [NSMutableDictionary new];
@@ -22,7 +22,8 @@
 }
 
 -(id)init {
-    return [AXNManager sharedInstance];
+  [[objc_getClass("NSDistributedNotificationCenter") defaultCenter] addObserver:self selector:@selector(clearAll) name:@"me.nepeta.axon.clearAllNotification" object:nil];
+  return self;
 }
 
 -(void)getRidOfWaste {
@@ -122,6 +123,14 @@
     if (self.notificationRequests[bundleIdentifier]) {
         [self.dispatcher destination:nil requestsClearingNotificationRequests:[self allRequestsForBundleIdentifier:bundleIdentifier]];
     }
+}
+
+-(void)clearAll {
+  NSMutableArray *array = [NSMutableArray new];
+  for(NSArray *value in [self.notificationRequests allValues]) {
+    for(AXNRequestWrapper *req in value) [array addObject:req.request];
+  }
+  [self.dispatcher destination:nil requestsClearingNotificationRequests:array];
 }
 
 -(void)insertNotificationRequest:(NCNotificationRequest *)req {

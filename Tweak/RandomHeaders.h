@@ -1,5 +1,6 @@
 #import "Protocol.h"
 #import <WebKit/WebKit.h>
+#import <objc/runtime.h>
 
 @interface BBBulletin : NSObject
 
