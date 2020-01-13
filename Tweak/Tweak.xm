@@ -16,6 +16,7 @@ NSInteger style;
 NSInteger showByDefault;
 NSInteger alignment;
 NSInteger verticalPosition;
+NSInteger location;
 CGFloat spacing;
 
 void updateViewConfiguration() {
@@ -230,7 +231,7 @@ void updateViewConfiguration() {
 @interface NCNotificationStructuredSectionList
 @property (nonatomic,readonly) NSArray * allNotificationRequests;
 @end
-@interface NCNotificationStructuredListViewController <clvc>
+@interface NCNotificationStructuredListViewController : UIViewController <clvc>
 @property (nonatomic,assign) BOOL axnAllowChanges;
 @property (nonatomic,retain) NCNotificationMasterList * masterList;
 -(void)revealNotificationHistory:(BOOL)arg1 animated:(BOOL)arg2 ;
@@ -504,6 +505,11 @@ void updateViewConfiguration() {
 
 %end
 
+
+
+
+
+
 %group AxonHorizontal
 
 %hook SBDashBoardCombinedListViewController
@@ -530,7 +536,7 @@ void updateViewConfiguration() {
 -(void)viewDidLoad {
     %orig;
 
-    if (!initialized) {
+    if (!initialized && location == 0) {
         initialized = YES;
         UIStackView *stackView = [self valueForKey:@"_stackView"];
         self.axnView = [[AXNView alloc] initWithFrame:CGRectMake(0,0,64,90)];
@@ -538,25 +544,15 @@ void updateViewConfiguration() {
         [AXNManager sharedInstance].view = self.axnView;
         updateViewConfiguration();
 
+        NSMutableArray *constraints = [@[
+          [self.axnView.centerXAnchor constraintEqualToAnchor:stackView.centerXAnchor],
+          [self.axnView.leadingAnchor constraintEqualToAnchor:stackView.leadingAnchor constant:10],
+          [self.axnView.trailingAnchor constraintEqualToAnchor:stackView.trailingAnchor constant:-10],
+          [self.axnView.heightAnchor constraintEqualToConstant:style == 4 ? 30 : 90]
+        ] mutableCopy];
+
         [stackView addArrangedSubview:self.axnView];
-
-        [NSLayoutConstraint activateConstraints:@[
-            [self.axnView.centerXAnchor constraintEqualToAnchor:stackView.centerXAnchor],
-            [self.axnView.leadingAnchor constraintEqualToAnchor:stackView.leadingAnchor constant:10],
-            [self.axnView.trailingAnchor constraintEqualToAnchor:stackView.trailingAnchor constant:-10],
-            // [self.axnView.heightAnchor constraintEqualToConstant:90]
-        ]];
-
-
-        if (style != 4) {
-            [NSLayoutConstraint activateConstraints:@[
-                [self.axnView.heightAnchor constraintEqualToConstant:90]
-            ]];
-        } else {
-            [NSLayoutConstraint activateConstraints:@[
-                [self.axnView.heightAnchor constraintEqualToConstant:30]
-            ]];
-        }
+        [NSLayoutConstraint activateConstraints:constraints];
     }
 }
 
@@ -584,12 +580,59 @@ void updateViewConfiguration() {
 
 %end
 
+%hook NCNotificationCombinedListViewController
+-(void)viewDidLoad{
+    %orig;
+    if (!initialized && location == 1) {
+        initialized = YES;
+        AXNView *axnView = [[AXNView alloc] initWithFrame:CGRectMake(0,0,64,90)];
+        axnView.translatesAutoresizingMaskIntoConstraints = NO;
+        [AXNManager sharedInstance].view = axnView;
+        updateViewConfiguration();
+
+        NSMutableArray *constraints = [@[
+          [axnView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-55],
+          [axnView.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
+          [axnView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:10],
+          [axnView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-10],
+          [axnView.heightAnchor constraintEqualToConstant:style == 4 ? 30 : 90]
+        ] mutableCopy];
+
+        [self.view addSubview:axnView];
+        [NSLayoutConstraint activateConstraints:constraints];
+    }
+}
+%end
+%hook NCNotificationStructuredListViewController
+-(void)viewDidLoad{
+    %orig;
+    if (!initialized && location == 1) {
+        initialized = YES;
+        AXNView *axnView = [[AXNView alloc] initWithFrame:CGRectMake(0,0,64,90)];
+        axnView.translatesAutoresizingMaskIntoConstraints = NO;
+        [AXNManager sharedInstance].view = axnView;
+        updateViewConfiguration();
+
+        NSMutableArray *constraints = [@[
+          [axnView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-55],
+          [axnView.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
+          [axnView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:10],
+          [axnView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-10],
+          [axnView.heightAnchor constraintEqualToConstant:style == 4 ? 30 : 90]
+        ] mutableCopy];
+
+        [self.view addSubview:axnView];
+        [NSLayoutConstraint activateConstraints:constraints];
+    }
+}
+%end
+
 %hook CSNotificationAdjunctListViewController
 %property (nonatomic, retain) AXNView *axnView;
 -(void)viewDidLoad {
     %orig;
 
-    if (!initialized) {
+    if (!initialized && location == 0) {
         initialized = YES;
         UIStackView *stackView = [self valueForKey:@"_stackView"];
         self.axnView = [[AXNView alloc] initWithFrame:CGRectMake(0,0,64,90)];
@@ -597,36 +640,28 @@ void updateViewConfiguration() {
         [AXNManager sharedInstance].view = self.axnView;
         updateViewConfiguration();
 
+        NSMutableArray *constraints = [@[
+          [self.axnView.centerXAnchor constraintEqualToAnchor:stackView.centerXAnchor],
+          [self.axnView.leadingAnchor constraintEqualToAnchor:stackView.leadingAnchor constant:10],
+          [self.axnView.trailingAnchor constraintEqualToAnchor:stackView.trailingAnchor constant:-10],
+          [self.axnView.heightAnchor constraintEqualToConstant:style == 4 ? 30 : 90]
+        ] mutableCopy];
+
         [stackView addArrangedSubview:self.axnView];
-
-        [NSLayoutConstraint activateConstraints:@[
-            [self.axnView.centerXAnchor constraintEqualToAnchor:stackView.centerXAnchor],
-            [self.axnView.leadingAnchor constraintEqualToAnchor:stackView.leadingAnchor constant:10],
-            [self.axnView.trailingAnchor constraintEqualToAnchor:stackView.trailingAnchor constant:-10],
-            // [self.axnView.heightAnchor constraintEqualToConstant:90]
-        ]];
-
-
-        if (style != 4) {
-            [NSLayoutConstraint activateConstraints:@[
-                [self.axnView.heightAnchor constraintEqualToConstant:90]
-            ]];
-        } else {
-            [NSLayoutConstraint activateConstraints:@[
-                [self.axnView.heightAnchor constraintEqualToConstant:30]
-            ]];
-        }
+        [NSLayoutConstraint activateConstraints:constraints];
     }
 }
 
 -(void)_updatePresentingContent {
     %orig;
+    if(location == 1) return;
     UIStackView *stackView = [self valueForKey:@"_stackView"];
     [stackView removeArrangedSubview:self.axnView];
     [stackView addArrangedSubview:self.axnView];
 }
 -(void)_insertItem:(id)arg1 animated:(BOOL)arg2 {
     %orig;
+    if(location == 1) return;
     UIStackView *stackView = [self valueForKey:@"_stackView"];
     [stackView removeArrangedSubview:self.axnView];
     [stackView addArrangedSubview:self.axnView];
@@ -662,7 +697,9 @@ void loadPrefs() {
   showByDefault = [prefs[@"ShowByDefault"] intValue] ?: 0;
   alignment = [prefs[@"Alignment"] intValue] ?: 0;
   verticalPosition = [prefs[@"VerticalPosition"] intValue] ?: 0;
+  location = [prefs[@"Location"] intValue] ?: 0;
   spacing = [prefs[@"Spacing"] floatValue] ?: 10;
+  if(style > 4) style = 4;
   updateViewConfiguration();
 }
 

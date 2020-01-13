@@ -30,6 +30,10 @@
   "DIM" = "Dim others";
   "NONE" = "None";
 
+  "LOCATION" = "Location";
+  "TOP" = "Top";
+  "BOTTOM" = "Bottom (Beta)";
+
   "BADGES" = "Badges";
   "SHOW_BACKGROUND" = "Show background";
 
