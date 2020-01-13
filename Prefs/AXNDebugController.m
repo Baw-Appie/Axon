@@ -14,8 +14,13 @@
 		})];
 
     [specifiers addObject:({
-			PSSpecifier *specifier = [PSSpecifier preferenceSpecifierNamed:@"Clear All Notification" target:self set:nil get:nil detail:nil cell:PSButtonCell edit:nil];
+			PSSpecifier *specifier = [PSSpecifier preferenceSpecifierNamed:@"Clear all notification" target:self set:nil get:nil detail:nil cell:PSButtonCell edit:nil];
 	    specifier->action = @selector(clearAll);
+			specifier;
+		})];
+    [specifiers addObject:({
+			PSSpecifier *specifier = [PSSpecifier preferenceSpecifierNamed:@"Save notification list" target:self set:nil get:nil detail:nil cell:PSButtonCell edit:nil];
+	    specifier->action = @selector(saveNotification);
 			specifier;
 		})];
     [specifiers addObject:({
@@ -33,6 +38,13 @@
 -(void)clearAll {
   [[objc_getClass("NSDistributedNotificationCenter") defaultCenter] postNotificationName:@"me.nepeta.axon.clearAllNotification" object:nil];
   UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Debug" message:@"All notifications registered with Axon have been removed." preferredStyle:UIAlertControllerStyleAlert];
+  [alert addAction:[UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+  }]];
+  return [self presentViewController:alert animated:YES completion:nil];
+}
+-(void)saveNotification {
+  [[objc_getClass("NSDistributedNotificationCenter") defaultCenter] postNotificationName:@"me.nepeta.axon.saveNotification" object:nil];
+  UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Debug" message:@"All notifications registered with Axon have been saved to /var/mobile/Documents/AxonDebug.txt" preferredStyle:UIAlertControllerStyleAlert];
   [alert addAction:[UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
   }]];
   return [self presentViewController:alert animated:YES completion:nil];

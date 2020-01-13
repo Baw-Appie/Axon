@@ -23,7 +23,16 @@
 
 -(id)init {
   [[objc_getClass("NSDistributedNotificationCenter") defaultCenter] addObserver:self selector:@selector(clearAll) name:@"me.nepeta.axon.clearAllNotification" object:nil];
+  [[objc_getClass("NSDistributedNotificationCenter") defaultCenter] addObserver:self selector:@selector(saveNotificationForDebug) name:@"me.nepeta.axon.saveNotification" object:nil];
   return self;
+}
+
+-(void)saveNotificationForDebug {
+  NSMutableArray *array = [NSMutableArray new];
+  for(NSArray *value in [self.notificationRequests allValues]) {
+    for(AXNRequestWrapper *req in value) [array addObject:req.request];
+  }
+  [[array description] writeToFile:@"/var/mobile/Documents/AxonDebug.txt" atomically:false encoding:NSUTF8StringEncoding error:nil];
 }
 
 -(void)getRidOfWaste {
