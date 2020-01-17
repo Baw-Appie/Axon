@@ -1,5 +1,8 @@
 #import <AppList/AppList.h>
-#import "AXNDebugController.h"
+#import "AXNController.h"
+
+@interface AXNDebugController : PSListController
+@end
 
 @implementation AXNDebugController
 -(id)specifiers {

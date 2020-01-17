@@ -16,6 +16,8 @@ NSInteger style;
 NSInteger showByDefault;
 NSInteger alignment;
 NSInteger verticalPosition;
+NSInteger autoLayout;
+NSInteger yAxis;
 NSInteger location;
 CGFloat spacing;
 
@@ -591,12 +593,14 @@ void updateViewConfiguration() {
         updateViewConfiguration();
 
         NSMutableArray *constraints = [@[
-          [axnView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-55],
           [axnView.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
           [axnView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:10],
           [axnView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-10],
           [axnView.heightAnchor constraintEqualToConstant:style == 4 ? 30 : 90]
         ] mutableCopy];
+
+        if(autoLayout) [constraints addObject:[axnView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-55]];
+        else [constraints addObject:[axnView.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:yAxis]];
 
         [self.view addSubview:axnView];
         [NSLayoutConstraint activateConstraints:constraints];
@@ -614,12 +618,14 @@ void updateViewConfiguration() {
         updateViewConfiguration();
 
         NSMutableArray *constraints = [@[
-          [axnView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-55],
           [axnView.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
           [axnView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:10],
           [axnView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-10],
           [axnView.heightAnchor constraintEqualToConstant:style == 4 ? 30 : 90]
         ] mutableCopy];
+
+        if(autoLayout) [constraints addObject:[axnView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-55]];
+        else [constraints addObject:[axnView.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:yAxis]];
 
         [self.view addSubview:axnView];
         [NSLayoutConstraint activateConstraints:constraints];
@@ -697,8 +703,11 @@ void loadPrefs() {
   showByDefault = [prefs[@"ShowByDefault"] intValue] ?: 0;
   alignment = [prefs[@"Alignment"] intValue] ?: 0;
   verticalPosition = [prefs[@"VerticalPosition"] intValue] ?: 0;
-  location = [prefs[@"Location"] intValue] ?: 0;
   spacing = [prefs[@"Spacing"] floatValue] ?: 10;
+  autoLayout = prefs[@"autoLayout"] != nil ? [prefs[@"autoLayout"] boolValue] : true;
+  location = [prefs[@"Location"] intValue] ?: 0;
+  if(!autoLayout) location = 1;
+  yAxis = [prefs[@"yAxis"] intValue] ?: 0;
   if(style > 4) style = 4;
   updateViewConfiguration();
 }

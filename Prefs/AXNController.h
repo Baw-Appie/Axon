@@ -6,10 +6,16 @@
 #import <Preferences/PSListController.h>
 #import <Preferences/PSListItemsController.h>
 
-#import "AXNDebugController.h"
+#define PREFERENCE_IDENTIFIER @"/var/mobile/Library/Preferences/me.nepeta.axon.plist"
+
+
+@interface PSListController (Private)
+- (void)insertSpecifier:(id)arg1 atIndex:(long long)arg2 animated:(bool)arg3;
+@end
 
 @interface PSSpecifier (Private)
 - (void)loadValuesAndTitlesFromDataSource;
+- (void)setValues:(id)arg1 titles:(id)arg2;
 @end
 
 @interface PSEditableListController : PSListController
@@ -30,7 +36,4 @@
 -(void)setEditable:(BOOL)arg1 ;
 -(void)suspend;
 -(BOOL)editable;
-@end
-
-@interface AXNDebugController : PSListController
 @end
