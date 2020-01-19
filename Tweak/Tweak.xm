@@ -705,8 +705,8 @@ void loadPrefs() {
   verticalPosition = [prefs[@"VerticalPosition"] intValue] ?: 0;
   spacing = [prefs[@"Spacing"] floatValue] ?: 10;
   autoLayout = prefs[@"autoLayout"] != nil ? [prefs[@"autoLayout"] boolValue] : true;
-  location = [prefs[@"Location"] intValue] ?: 0;
-  if(!autoLayout) location = 1;
+  location = [prefs[@"location"] intValue] ?: 0;
+  if(autoLayout == false) location = 1;
   yAxis = [prefs[@"yAxis"] intValue] ?: 0;
   if(style > 4) style = 4;
   updateViewConfiguration();

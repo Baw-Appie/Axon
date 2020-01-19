@@ -38,7 +38,7 @@ NSMutableDictionary *prefs;
 			specifier;
 		})];
 
-		self.autoLayoutLocationSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Location" target:self set:@selector(setSwitch:forSpecifier:) get:@selector(getSwitch:) detail:nil cell:PSSegmentCell edit:nil];
+		self.autoLayoutLocationSpecifier = [PSSpecifier preferenceSpecifierNamed:@"Location" target:self set:@selector(setNumber:forSpecifier:) get:@selector(getSwitch:) detail:nil cell:PSSegmentCell edit:nil];
 		[self.autoLayoutLocationSpecifier setValues:@[@0, @1] titles:@[@"Top", @"Bottom (Beta)"]];
 		[self.autoLayoutLocationSpecifier.properties setValue:@"location" forKey:@"displayIdentifier"];
 
