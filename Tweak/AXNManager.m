@@ -135,11 +135,7 @@
 }
 
 -(void)clearAll {
-  NSMutableArray *array = [NSMutableArray new];
-  for(NSArray *value in [self.notificationRequests allValues]) {
-    for(AXNRequestWrapper *req in value) [array addObject:req.request];
-  }
-  [self.dispatcher destination:nil requestsClearingNotificationRequests:array];
+  self.notificationRequests = nil;
 }
 
 -(void)insertNotificationRequest:(NCNotificationRequest *)req {

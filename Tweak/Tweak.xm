@@ -720,11 +720,8 @@ void loadPrefs() {
 
   if(enabled) {
     %init(Axon);
-    if (!vertical) {
-        %init(AxonHorizontal);
-    } else {
-        %init(AxonVertical);
-    }
+    if (!vertical) %init(AxonHorizontal);
+    else %init(AxonVertical);
   }
   CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, displayStatusChanged, CFSTR("com.apple.iokit.hid.displayStatus"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 }
