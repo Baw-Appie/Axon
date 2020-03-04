@@ -36,13 +36,13 @@
 }
 
 -(void)getRidOfWaste {
-    for (NSString *bundleIdentifier in [self.notificationRequests allKeys]) {
-        __weak NSMutableArray *requests = self.notificationRequests[bundleIdentifier];
-        for (int i = [requests count] - 1; i >= 0; i--) {
-            __weak AXNRequestWrapper *wrapped = requests[i];
-            if (!wrapped || ![wrapped request]) [requests removeObjectAtIndex:i];
-        }
+  for (NSString *bundleIdentifier in [self.notificationRequests allKeys]) {
+    __weak NSMutableArray *requests = self.notificationRequests[bundleIdentifier];
+    for (int i = [requests count] - 1; i >= 0; i--) {
+      __weak AXNRequestWrapper *wrapped = requests[i];
+      if (!wrapped || ![wrapped request]) [requests removeObjectAtIndex:i];
     }
+  }
 }
 
 -(void)invalidateCountCache {
@@ -132,9 +132,13 @@
     if (self.notificationRequests[bundleIdentifier]) {
         [self.dispatcher destination:nil requestsClearingNotificationRequests:[self allRequestsForBundleIdentifier:bundleIdentifier]];
     }
+    self.notificationRequests[bundleIdentifier] = nil;
 }
 
 -(void)clearAll {
+  for(NSString *item in [self.notificationRequests allKeys]) {
+    [self.dispatcher destination:nil requestsClearingNotificationRequests:[self allRequestsForBundleIdentifier:item]];
+  }
   self.notificationRequests = nil;
 }
 
@@ -185,15 +189,20 @@
     }
 
     [self getRidOfWaste];
+
+    BOOL latestRequestVerified = true;
+    if(self.view.showByDefault == 1) latestRequestVerified = false;
     if (self.notificationRequests[bundleIdentifier]) {
         __weak NSMutableArray *requests = self.notificationRequests[bundleIdentifier];
         for (int i = [requests count] - 1; i >= 0; i--) {
             __weak AXNRequestWrapper *wrapped = requests[i];
             if (wrapped && [[req notificationIdentifier] isEqualToString:[wrapped notificationIdentifier]]) {
                 [requests removeObjectAtIndex:i];
+                if(!latestRequestVerified && [[wrapped notificationIdentifier] isEqualToString:[self.latestRequest notificationIdentifier]]) latestRequestVerified = true;
             }
         }
     }
+    if(!latestRequestVerified) self.latestRequest = nil;
 
     [self updateCountForBundleIdentifier:bundleIdentifier];
 }
@@ -332,6 +341,9 @@
 
 -(void)showNotificationRequestsForBundleIdentifier:(NSString *)bundleIdentifier {
     [self showNotificationRequests:[self requestsForBundleIdentifier:bundleIdentifier]];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+      [self.clvc updateNotifications];
+    });
 }
 
 -(void)hideAllNotificationRequests {

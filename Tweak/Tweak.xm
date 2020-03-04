@@ -224,6 +224,11 @@ void updateViewConfiguration() {
   if (!revealed && [self respondsToSelector:@selector(clearAllCoalescingControlsCells)]) [self clearAllCoalescingControlsCells];
 }
 
+%new
+-(void)updateNotifications {
+  [self _resetNotificationsHistory];
+}
+
 %end
 
 // iOS13 Support
@@ -237,6 +242,7 @@ void updateViewConfiguration() {
 @property (nonatomic,assign) BOOL axnAllowChanges;
 @property (nonatomic,retain) NCNotificationMasterList * masterList;
 -(void)revealNotificationHistory:(BOOL)arg1 animated:(BOOL)arg2 ;
+-(void)_resetCellWithRevealedActions;
 @end
 %hook NCNotificationStructuredListViewController
 %property (nonatomic,assign) BOOL axnAllowChanges;
@@ -333,6 +339,11 @@ void updateViewConfiguration() {
 %new
 -(void)revealNotificationHistory:(BOOL)revealed {
   [self revealNotificationHistory:revealed animated:true];
+}
+
+%new
+-(void)updateNotifications {
+  [self _resetCellWithRevealedActions];
 }
 
 %end

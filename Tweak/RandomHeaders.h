@@ -68,6 +68,7 @@
 -(void)clearAllCoalescingControlsCells;
 -(void)clearAll;
 -(UICollectionView*)collectionView;
+-(void)_resetNotificationsHistory;
 
 @end
 

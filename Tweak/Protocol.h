@@ -11,5 +11,6 @@
 -(NSSet *)allNotificationRequests;
 -(id)collectionView;
 -(void)revealNotificationHistory:(BOOL)revealed;
+-(void)updateNotifications;
 
 @end
