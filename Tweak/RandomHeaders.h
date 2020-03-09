@@ -1,5 +1,6 @@
 #import "Protocol.h"
 #import <WebKit/WebKit.h>
+#import <objc/runtime.h>
 
 @interface BBBulletin : NSObject
 
@@ -67,6 +68,7 @@
 -(void)clearAllCoalescingControlsCells;
 -(void)clearAll;
 -(UICollectionView*)collectionView;
+-(void)_resetNotificationsHistory;
 
 @end
 

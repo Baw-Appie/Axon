@@ -100,6 +100,14 @@
 			<key>PostNotification</key>
 			<string>me.nepeta.axon/ReloadPrefs</string>
 		</dict>
+		<dict>
+			<key>detail</key>
+			<string>AXNLocationController</string>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>label</key>
+			<string>LOCATION</string>
+		</dict>
 
 		<dict>
 			<key>cell</key>
@@ -245,11 +253,13 @@
 			<array>
 				<integer>0</integer>
 				<integer>1</integer>
+				<integer>2</integer>
 			</array>
 			<key>validTitles</key>
 			<array>
 				<string>BACKGROUND</string>
 				<string>DIM</string>
+				<string>NONE</string>
 			</array>
 			<key>alignment</key>
 			<string>2</string>
@@ -381,6 +391,14 @@
 			<key>url</key>
 			<string>https://twitter.com/bossgfx_</string>
 		</dict> -->
+		<dict>
+			<key>detail</key>
+			<string>AXNDebugController</string>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>label</key>
+			<string>DEBUG</string>
+		</dict>
 		<dict>
 			<key>action</key>
 			<string>respring:</string>

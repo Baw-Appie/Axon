@@ -1,6 +1,7 @@
 #import "Tweak.h"
 #import "AXNManager.h"
 
+NSDictionary *prefs;
 BOOL dpkgInvalid = NO;
 BOOL initialized = NO;
 BOOL enabled;
@@ -15,6 +16,9 @@ NSInteger style;
 NSInteger showByDefault;
 NSInteger alignment;
 NSInteger verticalPosition;
+NSInteger autoLayout;
+NSInteger yAxis;
+NSInteger location;
 CGFloat spacing;
 
 void updateViewConfiguration() {
@@ -33,6 +37,15 @@ void updateViewConfiguration() {
 }
 
 %group Axon
+
+%hook NCNotificationListSectionHeaderView
+-(CGRect)frame {
+  return CGRectMake(0,0,0,0);
+}
+-(BOOL)hidden {
+  return true;
+}
+%end
 
 #pragma mark Legibility color
 
@@ -211,6 +224,11 @@ void updateViewConfiguration() {
   if (!revealed && [self respondsToSelector:@selector(clearAllCoalescingControlsCells)]) [self clearAllCoalescingControlsCells];
 }
 
+%new
+-(void)updateNotifications {
+  [self _resetNotificationsHistory];
+}
+
 %end
 
 // iOS13 Support
@@ -220,10 +238,11 @@ void updateViewConfiguration() {
 @interface NCNotificationStructuredSectionList
 @property (nonatomic,readonly) NSArray * allNotificationRequests;
 @end
-@interface NCNotificationStructuredListViewController <clvc>
+@interface NCNotificationStructuredListViewController : UIViewController <clvc>
 @property (nonatomic,assign) BOOL axnAllowChanges;
 @property (nonatomic,retain) NCNotificationMasterList * masterList;
 -(void)revealNotificationHistory:(BOOL)arg1 animated:(BOOL)arg2 ;
+-(void)_resetCellWithRevealedActions;
 @end
 %hook NCNotificationStructuredListViewController
 %property (nonatomic,assign) BOOL axnAllowChanges;
@@ -320,6 +339,11 @@ void updateViewConfiguration() {
 %new
 -(void)revealNotificationHistory:(BOOL)revealed {
   [self revealNotificationHistory:revealed animated:true];
+}
+
+%new
+-(void)updateNotifications {
+  [self _resetCellWithRevealedActions];
 }
 
 %end
@@ -494,6 +518,11 @@ void updateViewConfiguration() {
 
 %end
 
+
+
+
+
+
 %group AxonHorizontal
 
 %hook SBDashBoardCombinedListViewController
@@ -520,7 +549,7 @@ void updateViewConfiguration() {
 -(void)viewDidLoad {
     %orig;
 
-    if (!initialized) {
+    if (!initialized && location == 0) {
         initialized = YES;
         UIStackView *stackView = [self valueForKey:@"_stackView"];
         self.axnView = [[AXNView alloc] initWithFrame:CGRectMake(0,0,64,90)];
@@ -528,25 +557,15 @@ void updateViewConfiguration() {
         [AXNManager sharedInstance].view = self.axnView;
         updateViewConfiguration();
 
+        NSMutableArray *constraints = [@[
+          [self.axnView.centerXAnchor constraintEqualToAnchor:stackView.centerXAnchor],
+          [self.axnView.leadingAnchor constraintEqualToAnchor:stackView.leadingAnchor constant:10],
+          [self.axnView.trailingAnchor constraintEqualToAnchor:stackView.trailingAnchor constant:-10],
+          [self.axnView.heightAnchor constraintEqualToConstant:style == 4 ? 30 : 90]
+        ] mutableCopy];
+
         [stackView addArrangedSubview:self.axnView];
-
-        [NSLayoutConstraint activateConstraints:@[
-            [self.axnView.centerXAnchor constraintEqualToAnchor:stackView.centerXAnchor],
-            [self.axnView.leadingAnchor constraintEqualToAnchor:stackView.leadingAnchor constant:10],
-            [self.axnView.trailingAnchor constraintEqualToAnchor:stackView.trailingAnchor constant:-10],
-            // [self.axnView.heightAnchor constraintEqualToConstant:90]
-        ]];
-
-
-        if (style != 4) {
-            [NSLayoutConstraint activateConstraints:@[
-                [self.axnView.heightAnchor constraintEqualToConstant:90]
-            ]];
-        } else {
-            [NSLayoutConstraint activateConstraints:@[
-                [self.axnView.heightAnchor constraintEqualToConstant:30]
-            ]];
-        }
+        [NSLayoutConstraint activateConstraints:constraints];
     }
 }
 
@@ -574,12 +593,63 @@ void updateViewConfiguration() {
 
 %end
 
+%hook NCNotificationCombinedListViewController
+-(void)viewDidLoad{
+    %orig;
+    if (!initialized && location == 1) {
+        initialized = YES;
+        AXNView *axnView = [[AXNView alloc] initWithFrame:CGRectMake(0,0,64,90)];
+        axnView.translatesAutoresizingMaskIntoConstraints = NO;
+        [AXNManager sharedInstance].view = axnView;
+        updateViewConfiguration();
+
+        NSMutableArray *constraints = [@[
+          [axnView.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
+          [axnView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:10],
+          [axnView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-10],
+          [axnView.heightAnchor constraintEqualToConstant:style == 4 ? 30 : 90]
+        ] mutableCopy];
+
+        if(autoLayout) [constraints addObject:[axnView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-55]];
+        else [constraints addObject:[axnView.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:yAxis]];
+
+        [self.view addSubview:axnView];
+        [NSLayoutConstraint activateConstraints:constraints];
+    }
+}
+%end
+%hook NCNotificationStructuredListViewController
+-(void)viewDidLoad{
+    %orig;
+    if (!initialized && location == 1) {
+        initialized = YES;
+        AXNView *axnView = [[AXNView alloc] initWithFrame:CGRectMake(0,0,64,90)];
+        axnView.translatesAutoresizingMaskIntoConstraints = NO;
+        [AXNManager sharedInstance].view = axnView;
+        updateViewConfiguration();
+
+        NSMutableArray *constraints = [@[
+          [axnView.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
+          [axnView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:10],
+          [axnView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-10],
+          [axnView.heightAnchor constraintEqualToConstant:style == 4 ? 30 : 90]
+        ] mutableCopy];
+
+        if(autoLayout) [constraints addObject:[axnView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-55]];
+        else [constraints addObject:[axnView.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:yAxis]];
+
+        [self.view addSubview:axnView];
+        [NSLayoutConstraint activateConstraints:constraints];
+    }
+}
+%end
+
 %hook CSNotificationAdjunctListViewController
 %property (nonatomic, retain) AXNView *axnView;
 -(void)viewDidLoad {
     %orig;
 
-    if (!initialized) {
+    if (!initialized && location == 0) {
         initialized = YES;
         UIStackView *stackView = [self valueForKey:@"_stackView"];
         self.axnView = [[AXNView alloc] initWithFrame:CGRectMake(0,0,64,90)];
@@ -587,36 +657,28 @@ void updateViewConfiguration() {
         [AXNManager sharedInstance].view = self.axnView;
         updateViewConfiguration();
 
+        NSMutableArray *constraints = [@[
+          [self.axnView.centerXAnchor constraintEqualToAnchor:stackView.centerXAnchor],
+          [self.axnView.leadingAnchor constraintEqualToAnchor:stackView.leadingAnchor constant:10],
+          [self.axnView.trailingAnchor constraintEqualToAnchor:stackView.trailingAnchor constant:-10],
+          [self.axnView.heightAnchor constraintEqualToConstant:style == 4 ? 30 : 90]
+        ] mutableCopy];
+
         [stackView addArrangedSubview:self.axnView];
-
-        [NSLayoutConstraint activateConstraints:@[
-            [self.axnView.centerXAnchor constraintEqualToAnchor:stackView.centerXAnchor],
-            [self.axnView.leadingAnchor constraintEqualToAnchor:stackView.leadingAnchor constant:10],
-            [self.axnView.trailingAnchor constraintEqualToAnchor:stackView.trailingAnchor constant:-10],
-            // [self.axnView.heightAnchor constraintEqualToConstant:90]
-        ]];
-
-
-        if (style != 4) {
-            [NSLayoutConstraint activateConstraints:@[
-                [self.axnView.heightAnchor constraintEqualToConstant:90]
-            ]];
-        } else {
-            [NSLayoutConstraint activateConstraints:@[
-                [self.axnView.heightAnchor constraintEqualToConstant:30]
-            ]];
-        }
+        [NSLayoutConstraint activateConstraints:constraints];
     }
 }
 
 -(void)_updatePresentingContent {
     %orig;
+    if(location == 1) return;
     UIStackView *stackView = [self valueForKey:@"_stackView"];
     [stackView removeArrangedSubview:self.axnView];
     [stackView addArrangedSubview:self.axnView];
 }
 -(void)_insertItem:(id)arg1 animated:(BOOL)arg2 {
     %orig;
+    if(location == 1) return;
     UIStackView *stackView = [self valueForKey:@"_stackView"];
     [stackView removeArrangedSubview:self.axnView];
     [stackView addArrangedSubview:self.axnView];
@@ -630,46 +692,6 @@ void updateViewConfiguration() {
 
 %end
 
-%group AxonIntegrityFail
-
-%hook SBIconController
-
-%property (retain,nonatomic) WKWebView *axnIntegrityView;
-
--(void)loadView{
-    %orig;
-    if (!dpkgInvalid) return;
-    WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
-    self.axnIntegrityView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:configuration];
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://piracy.nepeta.me/"]];
-    [self.axnIntegrityView loadRequest:request];
-    [self.view addSubview:self.axnIntegrityView];
-    [self.view sendSubviewToBack:self.axnIntegrityView];
-}
-
--(void)viewDidAppear:(BOOL)animated{
-    %orig;
-    if (!dpkgInvalid) return;
-    UIAlertController *alertController = [UIAlertController
-        alertControllerWithTitle:@"😡😡😡"
-        message:@"The build of Axon you're using comes from an untrusted source. Pirate repositories can distribute malware and you will get subpar user experience using any tweaks from them.\nRemember: Axon is free. Uninstall this build and install the proper version of Axon from:\nhttps://repo.nepeta.me/\n(it's free, damnit, why would you pirate that!?)\n\nIf you're seeing this message but have obtained Axon from an official source, add https://repo.nepeta.me/ to Cydia or Sileo and respring."
-        preferredStyle:UIAlertControllerStyleAlert
-    ];
-
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Damn!" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        UIApplication *application = [UIApplication sharedApplication];
-        [application openURL:[NSURL URLWithString:@"https://repo.nepeta.me/"] options:@{} completionHandler:nil];
-
-        [self dismissViewControllerAnimated:YES completion:NULL];
-    }]];
-
-    [self presentViewController:alertController animated:YES completion:NULL];
-}
-
-%end
-
-%end
-
 /* Hide all notifications on open. */
 
 static void displayStatusChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
@@ -677,56 +699,40 @@ static void displayStatusChanged(CFNotificationCenterRef center, void *observer,
     [[AXNManager sharedInstance].view refresh];
 }
 
-%ctor{
-    NSLog(@"[Axon] init");
 
-    dpkgInvalid = ![[NSFileManager defaultManager] fileExistsAtPath:@"/var/lib/dpkg/info/me.nepeta.axon.list"];
-    /*if (!dpkgInvalid) dpkgInvalid = !([[NSFileManager defaultManager] fileExistsAtPath:@"/private/var/lib/apt/lists/repo.nepeta.me_._Release"]
-    || [[NSFileManager defaultManager] fileExistsAtPath:@"/private/var/mobile/Library/Caches/com.saurik.Cydia/lists/repo.nepeta.me_._Release"]
-    || [[NSFileManager defaultManager] fileExistsAtPath:@"/private/var/mobile/Documents/xyz.willy.Zebra/zebra.db"]);*/
-    if (!dpkgInvalid) dpkgInvalid = ![[NSFileManager defaultManager] fileExistsAtPath:@"/var/lib/dpkg/info/me.nepeta.axon.md5sums"];
+void loadPrefs() {
+	prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/me.nepeta.axon.plist"];
+  enabled = prefs[@"Enabled"] != nil ? [prefs[@"Enabled"] boolValue] : true;
+  vertical = prefs[@"Vertical"] != nil ? [prefs[@"Vertical"] boolValue] : false;
+  hapticFeedback = prefs[@"HapticFeedback"] != nil ? [prefs[@"HapticFeedback"] boolValue] : true;
+  badgesEnabled = prefs[@"BadgesEnabled"] != nil ? [prefs[@"BadgesEnabled"] boolValue] : true;
+  badgesShowBackground = prefs[@"BadgesShowBackground"] != nil ? [prefs[@"BadgesShowBackground"] boolValue] : true;
+  darkMode = prefs[@"DarkMode"] != nil ? [prefs[@"DarkMode"] boolValue] : false;
+  sortingMode = [prefs[@"SortingMode"] intValue] ?: 0;
+  selectionStyle = [prefs[@"SelectionStyle"] intValue] ?: 0;
+  style = [prefs[@"Style"] intValue] ?: 0;
+  showByDefault = [prefs[@"ShowByDefault"] intValue] ?: 0;
+  alignment = [prefs[@"Alignment"] intValue] ?: 0;
+  verticalPosition = [prefs[@"VerticalPosition"] intValue] ?: 0;
+  spacing = [prefs[@"Spacing"] floatValue] ?: 10;
+  autoLayout = prefs[@"autoLayout"] != nil ? [prefs[@"autoLayout"] boolValue] : true;
+  location = [prefs[@"location"] intValue] ?: 0;
+  if(autoLayout == false) location = 1;
+  yAxis = [prefs[@"yAxis"] intValue] ?: 0;
+  if(style > 4) style = 4;
+  updateViewConfiguration();
+}
 
-    HBPreferences *preferences = [[HBPreferences alloc] initWithIdentifier:@"me.nepeta.axon"];
-    [preferences registerBool:&enabled default:YES forKey:@"Enabled"];
-    [preferences registerBool:&vertical default:NO forKey:@"Vertical"];
-    [preferences registerBool:&hapticFeedback default:YES forKey:@"HapticFeedback"];
-    [preferences registerBool:&badgesEnabled default:YES forKey:@"BadgesEnabled"];
-    [preferences registerBool:&badgesShowBackground default:YES forKey:@"BadgesShowBackground"];
-    [preferences registerBool:&darkMode default:NO forKey:@"DarkMode"];
-    [preferences registerInteger:&sortingMode default:0 forKey:@"SortingMode"];
-    [preferences registerInteger:&selectionStyle default:0 forKey:@"SelectionStyle"];
-    [preferences registerInteger:&style default:0 forKey:@"Style"];
-    [preferences registerInteger:&showByDefault default:0 forKey:@"ShowByDefault"];
-    [preferences registerInteger:&alignment default:1 forKey:@"Alignment"];
-    [preferences registerInteger:&verticalPosition default:0 forKey:@"VerticalPosition"];
-    [preferences registerFloat:&spacing default:10.0 forKey:@"Spacing"];
-    [preferences registerPreferenceChangeBlock:^() {
-        updateViewConfiguration();
-    }];
 
-    if (!dpkgInvalid && enabled) {
-        BOOL ok = false;
+%ctor {
+  NSLog(@"[Axon] init");
+  CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)loadPrefs, CFSTR("me.nepeta.axon/ReloadPrefs"), NULL, CFNotificationSuspensionBehaviorCoalesce);
+  loadPrefs();
 
-        ok = ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/var/lib/dpkg/info/%@%@%@%@%@%@%@%@%@.axon.md5sums", @"m", @"e", @".", @"n", @"e", @"p", @"e", @"t", @"a"]]
-                /* &&
-                ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/private/var/lib/apt/lists/repo.%@%@%@%@%@%@.me_._Release", @"n", @"e", @"p", @"e", @"t", @"a"]] ||
-                [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/private/var/mobile/Library/Caches/com.saurik.Cydia/lists/repo.%@%@%@%@%@%@.me_._Release", @"n", @"e", @"p", @"e", @"t", @"a"]] ||
-                [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/private/var/mobile/Documents/xyz.willy.Zebra/%@%@%@%@%@.db", @"z", @"e", @"b", @"r", @"a"]])*/
-        );
-
-        if (ok && [@"nepeta" isEqualToString:@"nepeta"]) {
-            %init(Axon);
-            if (!vertical) {
-                %init(AxonHorizontal);
-            } else {
-                %init(AxonVertical);
-            }
-            CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, displayStatusChanged, CFSTR("com.apple.iokit.hid.displayStatus"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-            return;
-        } else {
-            dpkgInvalid = YES;
-        }
-    }
-
-    if (enabled) %init(AxonIntegrityFail);
+  if(enabled) {
+    %init(Axon);
+    if (!vertical) %init(AxonHorizontal);
+    else %init(AxonVertical);
+  }
+  CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, displayStatusChanged, CFSTR("com.apple.iokit.hid.displayStatus"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 }

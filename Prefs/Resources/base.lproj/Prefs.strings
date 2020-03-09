@@ -28,6 +28,11 @@
   "SELECTION_STYLE" = "Selection style";
   "BACKGROUND" = "Add background";
   "DIM" = "Dim others";
+  "NONE" = "None";
+
+  "LOCATION" = "Location";
+  "TOP" = "Top";
+  "BOTTOM" = "Bottom (Beta)";
 
   "BADGES" = "Badges";
   "SHOW_BACKGROUND" = "Show background";
@@ -43,6 +48,7 @@
   "CREDITS_1_INFO" = "Designed the icon and banners.";
 
   "RESPRING" = "Respring";
+  "DEBUG" = "Debug options";
   "SOURCE_CODE" = "Source code";
   "DONATE_TO_NEPETA" = "Donate to Nepeta";
   "SUPPORT_ME" = "Support me!";

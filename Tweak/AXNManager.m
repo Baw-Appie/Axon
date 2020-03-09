@@ -8,7 +8,7 @@
     static AXNManager *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedInstance = [AXNManager alloc];
+        sharedInstance = [[AXNManager alloc] init];
         sharedInstance.names = [NSMutableDictionary new];
         sharedInstance.timestamps = [NSMutableDictionary new];
         sharedInstance.notificationRequests = [NSMutableDictionary new];
@@ -22,17 +22,27 @@
 }
 
 -(id)init {
-    return [AXNManager sharedInstance];
+  [[objc_getClass("NSDistributedNotificationCenter") defaultCenter] addObserver:self selector:@selector(clearAll) name:@"me.nepeta.axon.clearAllNotification" object:nil];
+  [[objc_getClass("NSDistributedNotificationCenter") defaultCenter] addObserver:self selector:@selector(saveNotificationForDebug) name:@"me.nepeta.axon.saveNotification" object:nil];
+  return self;
+}
+
+-(void)saveNotificationForDebug {
+  NSMutableArray *array = [NSMutableArray new];
+  for(NSArray *value in [self.notificationRequests allValues]) {
+    for(AXNRequestWrapper *req in value) [array addObject:req.request];
+  }
+  [[array description] writeToFile:@"/var/mobile/Documents/AxonDebug.txt" atomically:false encoding:NSUTF8StringEncoding error:nil];
 }
 
 -(void)getRidOfWaste {
-    for (NSString *bundleIdentifier in [self.notificationRequests allKeys]) {
-        __weak NSMutableArray *requests = self.notificationRequests[bundleIdentifier];
-        for (int i = [requests count] - 1; i >= 0; i--) {
-            __weak AXNRequestWrapper *wrapped = requests[i];
-            if (!wrapped || ![wrapped request]) [requests removeObjectAtIndex:i];
-        }
+  for (NSString *bundleIdentifier in [self.notificationRequests allKeys]) {
+    __weak NSMutableArray *requests = self.notificationRequests[bundleIdentifier];
+    for (int i = [requests count] - 1; i >= 0; i--) {
+      __weak AXNRequestWrapper *wrapped = requests[i];
+      if (!wrapped || ![wrapped request]) [requests removeObjectAtIndex:i];
     }
+  }
 }
 
 -(void)invalidateCountCache {
@@ -122,6 +132,14 @@
     if (self.notificationRequests[bundleIdentifier]) {
         [self.dispatcher destination:nil requestsClearingNotificationRequests:[self allRequestsForBundleIdentifier:bundleIdentifier]];
     }
+    self.notificationRequests[bundleIdentifier] = nil;
+}
+
+-(void)clearAll {
+  for(NSString *item in [self.notificationRequests allKeys]) {
+    [self.dispatcher destination:nil requestsClearingNotificationRequests:[self allRequestsForBundleIdentifier:item]];
+  }
+  self.notificationRequests = [@{} mutableCopy];
 }
 
 -(void)insertNotificationRequest:(NCNotificationRequest *)req {
@@ -171,15 +189,20 @@
     }
 
     [self getRidOfWaste];
+
+    BOOL latestRequestVerified = true;
+    if(self.view.showByDefault == 1) latestRequestVerified = false;
     if (self.notificationRequests[bundleIdentifier]) {
         __weak NSMutableArray *requests = self.notificationRequests[bundleIdentifier];
         for (int i = [requests count] - 1; i >= 0; i--) {
             __weak AXNRequestWrapper *wrapped = requests[i];
             if (wrapped && [[req notificationIdentifier] isEqualToString:[wrapped notificationIdentifier]]) {
                 [requests removeObjectAtIndex:i];
+                if(!latestRequestVerified && [[wrapped notificationIdentifier] isEqualToString:[self.latestRequest notificationIdentifier]]) latestRequestVerified = true;
             }
         }
     }
+    if(!latestRequestVerified) self.latestRequest = nil;
 
     [self updateCountForBundleIdentifier:bundleIdentifier];
 }
@@ -318,6 +341,9 @@
 
 -(void)showNotificationRequestsForBundleIdentifier:(NSString *)bundleIdentifier {
     [self showNotificationRequests:[self requestsForBundleIdentifier:bundleIdentifier]];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+      [self.clvc updateNotifications];
+    });
 }
 
 -(void)hideAllNotificationRequests {

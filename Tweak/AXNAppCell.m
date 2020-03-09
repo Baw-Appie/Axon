@@ -98,6 +98,9 @@
 -(void)axnClearAll {
     [[AXNManager sharedInstance] clearAll:self.bundleIdentifier];
 }
+-(void)axnRealClearAll {
+  [[AXNManager sharedInstance] clearAll];
+}
 
 -(BOOL)canBecomeFirstResponder {
     return YES;
@@ -107,17 +110,40 @@
     return (action == @selector(axnClearAll));
 }
 
+-(NSString *)getAppName {
+  SBApplication *app = [[NSClassFromString(@"SBApplicationController") sharedInstance] applicationWithBundleIdentifier:self.bundleIdentifier];
+  return app.displayName;
+}
+
 -(void)showMenu:(UILongPressGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateBegan) {
         AudioServicesPlaySystemSound(1519);
 
-        [self becomeFirstResponder];
-        UIMenuController *menu = [UIMenuController sharedMenuController];
-        menu.menuItems = @[
-            [[UIMenuItem alloc] initWithTitle:@"Clear All" action:@selector(axnClearAll)],
-        ];
-        [menu setTargetRect:self.bounds inView:self];
-        [menu setMenuVisible:YES animated:YES];
+        float version = [[[UIDevice currentDevice] systemVersion] floatValue];
+
+        if(version >= 13) {
+          UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Notification Option" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+      		[alert addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Clear All %@ notifications", [self getAppName]] style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+            [self axnClearAll];
+      		}]];
+      		[alert addAction:[UIAlertAction actionWithTitle:@"Clear All notifications" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+            [self axnRealClearAll];
+      		}]];
+        	[alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        	}]];
+          UIResponder *responder = self;
+          while ([responder isKindOfClass:[UIView class]]) responder = [responder nextResponder];
+          [(UIViewController *)responder presentViewController:alert animated:YES completion:nil];
+        } else {
+          [self becomeFirstResponder];
+          UIMenuController *menu = [UIMenuController sharedMenuController];
+          menu.menuItems = @[
+              [[UIMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"Clear All %@ notifications", [self getAppName]] action:@selector(axnClearAll)],
+              [[UIMenuItem alloc] initWithTitle:@"Clear All notifications" action:@selector(axnRealClearAll)]
+          ];
+          [menu setTargetRect:self.bounds inView:self];
+          [menu setMenuVisible:YES animated:YES];
+        }
     }
 }
 
@@ -210,25 +236,17 @@
 -(void)setDarkMode:(BOOL)darkMode {
     if (_darkMode == darkMode) return;
 
-    // if(_style == 4) {
-      // UIVisualEffectView *view = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:darkMode ? UIBlurEffectStyleDark : UIBlurEffectStyleLight]];
-      // view.frame = self.blurView.frame;
-      //
-      // self.blurView = view;
-
-      [self.blurView setEffect:[UIBlurEffect effectWithStyle:darkMode ? UIBlurEffectStyleDark : UIBlurEffectStyleLight]];
-      self.badgeLabel.textColor = darkMode ? [UIColor whiteColor] : [UIColor blackColor];
-      self.badgeLabel.alpha = 0.4f;
-
-      // self.blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
-      // self.blurView.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
-    // }
+    [self.blurView setEffect:[UIBlurEffect effectWithStyle:darkMode ? UIBlurEffectStyleDark : UIBlurEffectStyleLight]];
+    if(darkMode) [self.blurView setAlpha:0.7];
+    self.badgeLabel.textColor = darkMode ? [UIColor whiteColor] : [UIColor blackColor];
+    self.badgeLabel.alpha = 0.4f;
 
     [self setNeedsDisplay];
 }
 
 -(void)setSelected:(BOOL)selected {
     [super setSelected:selected];
+    if(self.selectionStyle == 2) return;
 
     if (selected) {
         [UIView animateWithDuration:0.15 delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{

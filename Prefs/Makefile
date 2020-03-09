@@ -4,7 +4,7 @@ TARGET = iphone:12.2:12.2
 include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = AxonPrefs
-$(BUNDLE_NAME)_FILES = Preferences.m AXNAppearanceSettings.m AXNListItemsController.m
+$(BUNDLE_NAME)_FILES = Preferences.m AXNAppearanceSettings.m AXNListItemsController.m AXNDebugController.m AXNLocationController.m
 $(BUNDLE_NAME)_INSTALL_PATH = /Library/PreferenceBundles
 $(BUNDLE_NAME)_FRAMEWORKS = UIKit
 $(BUNDLE_NAME)_PRIVATE_FRAMEWORKS = Preferences
