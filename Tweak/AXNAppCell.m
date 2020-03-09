@@ -237,6 +237,7 @@
     if (_darkMode == darkMode) return;
 
     [self.blurView setEffect:[UIBlurEffect effectWithStyle:darkMode ? UIBlurEffectStyleDark : UIBlurEffectStyleLight]];
+    if(darkMode) [self.blurView setAlpha:0.7];
     self.badgeLabel.textColor = darkMode ? [UIColor whiteColor] : [UIColor blackColor];
     self.badgeLabel.alpha = 0.4f;
 
