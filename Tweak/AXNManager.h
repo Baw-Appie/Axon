@@ -26,6 +26,7 @@
 -(void)modifyNotificationRequest:(id)req;
 -(UIImage *)getIcon:(NSString *)bundleIdentifier;
 -(void)clearAll:(NSString *)bundleIdentifier;
+-(void)clearAll;
 
 -(void)showNotificationRequest:(id)req;
 -(void)hideNotificationRequest:(id)req;

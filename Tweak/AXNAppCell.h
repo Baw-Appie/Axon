@@ -25,3 +25,10 @@
 @property (nonatomic, assign) BOOL isSetupComplete;
 
 @end
+@interface SBApplicationController
++(id)sharedInstance;
+-(id)applicationWithBundleIdentifier:(id)arg1;
+@end
+@interface SBApplication
+@property (nonatomic,readonly) NSString * displayName;
+@end

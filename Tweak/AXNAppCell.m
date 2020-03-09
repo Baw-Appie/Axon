@@ -98,6 +98,9 @@
 -(void)axnClearAll {
     [[AXNManager sharedInstance] clearAll:self.bundleIdentifier];
 }
+-(void)axnRealClearAll {
+  [[AXNManager sharedInstance] clearAll];
+}
 
 -(BOOL)canBecomeFirstResponder {
     return YES;
@@ -105,6 +108,11 @@
 
 -(BOOL)canPerformAction:(SEL)action withSender:(id)sender {
     return (action == @selector(axnClearAll));
+}
+
+-(NSString *)getAppName {
+  SBApplication *app = [[NSClassFromString(@"SBApplicationController") sharedInstance] applicationWithBundleIdentifier:self.bundleIdentifier];
+  return app.displayName;
 }
 
 -(void)showMenu:(UILongPressGestureRecognizer *)sender {
@@ -115,8 +123,11 @@
 
         if(version >= 13) {
           UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Notification Option" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-      		[alert addAction:[UIAlertAction actionWithTitle:@"Clear All" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+      		[alert addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Clear All %@ notifications", [self getAppName]] style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
             [self axnClearAll];
+      		}]];
+      		[alert addAction:[UIAlertAction actionWithTitle:@"Clear All notifications" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+            [self axnRealClearAll];
       		}]];
         	[alert addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
         	}]];
@@ -127,7 +138,8 @@
           [self becomeFirstResponder];
           UIMenuController *menu = [UIMenuController sharedMenuController];
           menu.menuItems = @[
-              [[UIMenuItem alloc] initWithTitle:@"Clear All" action:@selector(axnClearAll)],
+              [[UIMenuItem alloc] initWithTitle:[NSString stringWithFormat:@"Clear All %@ notifications", [self getAppName]] action:@selector(axnClearAll)],
+              [[UIMenuItem alloc] initWithTitle:@"Clear All notifications" action:@selector(axnRealClearAll)]
           ];
           [menu setTargetRect:self.bounds inView:self];
           [menu setMenuVisible:YES animated:YES];
@@ -223,7 +235,7 @@
 }
 -(void)setDarkMode:(BOOL)darkMode {
     if (_darkMode == darkMode) return;
-    
+
     [self.blurView setEffect:[UIBlurEffect effectWithStyle:darkMode ? UIBlurEffectStyleDark : UIBlurEffectStyleLight]];
     self.badgeLabel.textColor = darkMode ? [UIColor whiteColor] : [UIColor blackColor];
     self.badgeLabel.alpha = 0.4f;

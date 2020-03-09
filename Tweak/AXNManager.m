@@ -139,7 +139,7 @@
   for(NSString *item in [self.notificationRequests allKeys]) {
     [self.dispatcher destination:nil requestsClearingNotificationRequests:[self allRequestsForBundleIdentifier:item]];
   }
-  self.notificationRequests = nil;
+  self.notificationRequests = [@{} mutableCopy];
 }
 
 -(void)insertNotificationRequest:(NCNotificationRequest *)req {
