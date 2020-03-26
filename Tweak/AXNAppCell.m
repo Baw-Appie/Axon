@@ -2,6 +2,10 @@
 #import "AXNAppCell.h"
 #import "AXNManager.h"
 
+@interface MTMaterialView : UIView
++(id)materialViewWithRecipe:(long long)arg1 options:(unsigned long long)arg2 ;
+@end
+
 @implementation AXNAppCell
 
 -(id)initWithFrame:(CGRect)frame {
@@ -236,8 +240,12 @@
 -(void)setDarkMode:(BOOL)darkMode {
     if (_darkMode == darkMode) return;
 
-    [self.blurView setEffect:[UIBlurEffect effectWithStyle:darkMode ? UIBlurEffectStyleDark : UIBlurEffectStyleLight]];
-    if(darkMode) [self.blurView setAlpha:0.7];
+    CGRect frame = self.blurView.frame;
+    if(darkMode) {
+      self.blurView = [NSClassFromString(@"MTMaterialView") materialViewWithRecipe:4 options:128];
+      self.blurView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.45];
+    } else self.blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
+    self.blurView.frame = frame;
     self.badgeLabel.textColor = darkMode ? [UIColor whiteColor] : [UIColor blackColor];
     self.badgeLabel.alpha = 0.4f;
 

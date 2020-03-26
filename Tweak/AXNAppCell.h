@@ -14,7 +14,7 @@
 }
 
 @property (nonatomic, retain) UIImageView *iconView;
-@property (nonatomic, retain) UIVisualEffectView *blurView;
+@property (nonatomic, retain) UIView *blurView;
 @property (nonatomic, retain) UILabel *badgeLabel;
 @property (nonatomic, retain) NSString *bundleIdentifier;
 @property (nonatomic, assign) NSInteger notificationCount;
