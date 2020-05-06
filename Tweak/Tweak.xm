@@ -567,7 +567,7 @@ void updateViewConfiguration() {
           [self.axnView.centerXAnchor constraintEqualToAnchor:stackView.centerXAnchor],
           [self.axnView.leadingAnchor constraintEqualToAnchor:stackView.leadingAnchor constant:10],
           [self.axnView.trailingAnchor constraintEqualToAnchor:stackView.trailingAnchor constant:-10],
-          [self.axnView.heightAnchor constraintEqualToConstant:style == 4 ? 30 : 90]
+          [self.axnView.heightAnchor constraintEqualToConstant:style == 4 ? 30 : (style == 5 ? 36 : 90)]
         ] mutableCopy];
 
         [stackView addArrangedSubview:self.axnView];
@@ -613,7 +613,7 @@ void updateViewConfiguration() {
           [axnView.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
           [axnView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:10],
           [axnView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-10],
-          [axnView.heightAnchor constraintEqualToConstant:style == 4 ? 30 : 90]
+          [axnView.heightAnchor constraintEqualToConstant:style == 4 ? 30 : (style == 5 ? 36 : 90)]
         ] mutableCopy];
 
         if(autoLayout) [constraints addObject:[axnView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-55]];
@@ -638,7 +638,7 @@ void updateViewConfiguration() {
           [axnView.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor],
           [axnView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:10],
           [axnView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-10],
-          [axnView.heightAnchor constraintEqualToConstant:style == 4 ? 30 : 90]
+          [axnView.heightAnchor constraintEqualToConstant:style == 4 ? 30 : (style == 5 ? 36 : 90)]
         ] mutableCopy];
 
         if(autoLayout) [constraints addObject:[axnView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-55]];
@@ -667,7 +667,7 @@ void updateViewConfiguration() {
           [self.axnView.centerXAnchor constraintEqualToAnchor:stackView.centerXAnchor],
           [self.axnView.leadingAnchor constraintEqualToAnchor:stackView.leadingAnchor constant:10],
           [self.axnView.trailingAnchor constraintEqualToAnchor:stackView.trailingAnchor constant:-10],
-          [self.axnView.heightAnchor constraintEqualToConstant:style == 4 ? 30 : 90]
+          [self.axnView.heightAnchor constraintEqualToConstant:style == 4 ? 30 : (style == 5 ? 36 : 90)]
         ] mutableCopy];
 
         [stackView addArrangedSubview:self.axnView];

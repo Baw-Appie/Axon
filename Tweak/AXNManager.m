@@ -130,14 +130,17 @@
 
 -(UIImage *)getIcon:(NSString *)bundleIdentifier rounded:(BOOL)rounded {
   UIImage *image = [self getIcon:bundleIdentifier];
+  if(rounded) {
+    UIGraphicsBeginImageContextWithOptions(CGRectMake(0,0,60,60).size, NO, 1.0);
+    [[UIBezierPath bezierPathWithRoundedRect:CGRectMake(0,0,60,60) cornerRadius:30] addClip];
+    [image drawInRect:CGRectMake(0,0,60,60)];
+    UIImage *finalImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
 
-  UIGraphicsBeginImageContextWithOptions(CGRectMake(0,0,60,60).size, NO, 1.0);
-  [[UIBezierPath bezierPathWithRoundedRect:CGRectMake(0,0,60,60) cornerRadius:30] addClip];
-  [image drawInRect:CGRectMake(0,0,60,60)];
-  UIImage *finalImage = UIGraphicsGetImageFromCurrentImageContext();
-  UIGraphicsEndImageContext();
-
-  return finalImage;
+    return finalImage;
+  } else {
+    return image;
+  }
 }
 
 -(void)clearAll:(NSString *)bundleIdentifier {
