@@ -3,6 +3,11 @@
 - (id)initWithImage:(id)arg1 algorithm:(long long)arg2;
 @end
 
+@interface MTMaterialView : UIView
++(id)materialViewWithRecipe:(long long)arg1 options:(unsigned long long)arg2 ;
++(id)materialViewWithRecipe:(long long)arg1 configuration:(unsigned long long)arg2 ;
+@end
+
 @interface MPArtworkColorAnalysis : NSObject
 @property (nonatomic, readonly) UIColor *backgroundColor;
 @property (nonatomic, readonly) UIColor *primaryTextColor;

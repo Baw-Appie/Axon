@@ -2,10 +2,6 @@
 #import "AXNAppCell.h"
 #import "AXNManager.h"
 
-@interface MTMaterialView : UIView
-+(id)materialViewWithRecipe:(long long)arg1 options:(unsigned long long)arg2 ;
-@end
-
 @implementation AXNAppCell
 
 -(id)initWithFrame:(CGRect)frame {
@@ -242,7 +238,12 @@
 
     CGRect frame = self.blurView.frame;
     if(darkMode) {
-      self.blurView = [NSClassFromString(@"MTMaterialView") materialViewWithRecipe:4 options:128];
+      id materialView = objc_getClass("MTMaterialView");
+      if([materialView respondsToSelector:@selector(materialViewWithRecipe:options:)]) {
+        self.blurView = [materialView materialViewWithRecipe:4 options:128];
+      } else {
+        self.blurView = [materialView materialViewWithRecipe:4 configuration:1];
+      }
       self.blurView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.45];
     } else self.blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
     self.blurView.frame = frame;
