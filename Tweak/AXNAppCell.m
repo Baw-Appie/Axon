@@ -236,8 +236,17 @@
 -(void)setDarkMode:(BOOL)darkMode {
     if (_darkMode == darkMode) return;
 
-    [self.blurView setEffect:[UIBlurEffect effectWithStyle:darkMode ? UIBlurEffectStyleDark : UIBlurEffectStyleLight]];
-    if(darkMode) [self.blurView setAlpha:0.7];
+    CGRect frame = self.blurView.frame;
+    if(darkMode) {
+      id materialView = objc_getClass("MTMaterialView");
+      if([materialView respondsToSelector:@selector(materialViewWithRecipe:options:)]) {
+        self.blurView = [materialView materialViewWithRecipe:4 options:128];
+      } else {
+        self.blurView = [materialView materialViewWithRecipe:4 configuration:1];
+      }
+      self.blurView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.45];
+    } else self.blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
+    self.blurView.frame = frame;
     self.badgeLabel.textColor = darkMode ? [UIColor whiteColor] : [UIColor blackColor];
     self.badgeLabel.alpha = 0.4f;
 
