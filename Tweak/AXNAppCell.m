@@ -240,9 +240,9 @@
     if(darkMode) {
       id materialView = objc_getClass("MTMaterialView");
       if([materialView respondsToSelector:@selector(materialViewWithRecipe:options:)]) {
-        self.blurView = [materialView materialViewWithRecipe:4 options:128];
+        self.blurView = [materialView materialViewWithRecipe:MTMaterialRecipeNotifications options:MTMaterialOptionsBlur];
       } else {
-        self.blurView = [materialView materialViewWithRecipe:4 configuration:1];
+        self.blurView = [materialView materialViewWithRecipe:MTMaterialRecipeNotifications configuration:1];
       }
       self.blurView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.45];
     } else self.blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
