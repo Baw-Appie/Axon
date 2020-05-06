@@ -88,6 +88,7 @@
 				<integer>2</integer>
 				<integer>3</integer>
 				<integer>4</integer>
+				<integer>5</integer>
 			</array>
 			<key>validTitles</key>
 			<array>
@@ -96,6 +97,7 @@
 				<string>COMPACT</string>
 				<string>TINY</string>
 				<string>GROUP</string>
+				<string>ROUNEDED_GROUP</string>
 			</array>
 			<key>PostNotification</key>
 			<string>me.nepeta.axon/ReloadPrefs</string>

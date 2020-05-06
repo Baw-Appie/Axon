@@ -109,6 +109,8 @@
         [collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
     }
 
+    if (self.style == 5) cell.alpha = 0.5;
+
     return cell;
 }
 
@@ -157,6 +159,7 @@
         case 2: return CGSizeMake(48, 48);
         case 3: return CGSizeMake(40, 64);
         case 4: return CGSizeMake(60, 30);
+        case 5: return CGSizeMake(60, 36);
         default: return CGSizeMake(64, 90);
     }
 }

@@ -85,6 +85,18 @@
             [self.badgeLabel.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-5],
             [self.badgeLabel.leadingAnchor constraintEqualToAnchor:self.leadingAnchor],
             [self.badgeLabel.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-5],
+        ],
+        @[  // group rounded
+            [self.iconView.topAnchor constraintEqualToAnchor:self.topAnchor constant:8],
+            [self.iconView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:3],
+            [self.iconView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-26],
+            [self.iconView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-8],
+
+            [self.badgeLabel.centerXAnchor constraintEqualToAnchor:self.centerXAnchor],
+            [self.badgeLabel.topAnchor constraintEqualToAnchor:self.topAnchor constant:8],
+            [self.badgeLabel.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-8],
+            [self.badgeLabel.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:33],
+            [self.badgeLabel.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-7],
         ]
     ];
 
@@ -150,10 +162,11 @@
 -(void)setBundleIdentifier:(NSString *)value {
     _bundleIdentifier = value;
 
-    self.iconView.image = [[AXNManager sharedInstance] getIcon:value];
+    self.iconView.image = [[AXNManager sharedInstance] getIcon:value rounded:_style == 5];
 
     self.badgeLabel.backgroundColor = [UIColor clearColor];
     if(_style != 4) self.badgeLabel.textColor = [[AXNManager sharedInstance] fallbackColor];
+    if(_style == 5) self.badgeLabel.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.2];
 
     BOOL iOS13 = [[[UIDevice currentDevice] systemVersion] floatValue] >= 13;
 
@@ -217,16 +230,22 @@
     if (style >= [_styleConstraints count] || style < 0) _style = 0;
     else _style = style;
 
-    if(style == 4) {
+    if(style == 4 || style == 5) {
+      if(style == 4) {
         self.badgeLabel.textAlignment = NSTextAlignmentRight;
         self.badgeLabel.backgroundColor = [UIColor clearColor];
         self.badgeLabel.textColor = [UIColor blackColor];
-        [self addSubview:self.blurView];
-        [self addSubview:self.badgeLabel];
-        [self addSubview:self.iconView];
+      } else {
+        self.layer.cornerRadius = 18;
+        self.alpha = 0.5;
+        self.badgeLabel.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.2];
+      }
+      [self addSubview:self.blurView];
+      [self addSubview:self.badgeLabel];
+      [self addSubview:self.iconView];
     } else {
-        [self addSubview:self.iconView];
-        [self addSubview:self.badgeLabel];
+      [self addSubview:self.iconView];
+      [self addSubview:self.badgeLabel];
     }
 
     if (oldStyle != -1) [NSLayoutConstraint deactivateConstraints:_styleConstraints[oldStyle]];

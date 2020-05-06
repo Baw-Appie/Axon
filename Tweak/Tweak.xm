@@ -725,7 +725,7 @@ void loadPrefs() {
   location = [prefs[@"location"] intValue] ?: 0;
   if(autoLayout == false) location = 1;
   yAxis = [prefs[@"yAxis"] intValue] ?: 0;
-  if(style > 4) style = 4;
+  if(style > 5) style = 4;
   updateViewConfiguration();
 }
 

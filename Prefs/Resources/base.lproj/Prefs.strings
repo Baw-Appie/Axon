@@ -13,6 +13,7 @@
   "COMPACT" = "Compact";
   "TINY" = "Tiny";
   "GROUP" = "Group (Beta, Respring required)";
+  "ROUNEDED_GROUP" = "Rounded Group (Beta, Respring required)";
 
   "SHOW" = "Show by default";
   "NOTHING" = "Nothing";
