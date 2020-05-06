@@ -38,7 +38,13 @@ void updateViewConfiguration() {
 
 %group Axon
 
+@interface NCNotificationListSectionHeaderView : UIView
+@end
+
 %hook NCNotificationListSectionHeaderView
+- (void)layoutSubviews {
+    self.hidden = 1;
+}
 -(CGRect)frame {
   return CGRectMake(0,0,0,0);
 }
