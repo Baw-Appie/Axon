@@ -3,7 +3,7 @@
 @interface AXNRequestWrapper : NSObject
 
 @property (nonatomic, strong) NSString *notificationIdentifier;
-@property (nonatomic, weak) NCNotificationRequest *request;
+@property (nonatomic, strong) NCNotificationRequest *request;
 
 +(AXNRequestWrapper *)wrapRequest:(NCNotificationRequest *)request;
 

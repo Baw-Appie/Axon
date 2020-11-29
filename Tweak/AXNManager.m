@@ -57,7 +57,7 @@
         return;
     }
 
-    if ([self.dispatcher.notificationStore respondsToSelector:@selector(coalescedNotificationForRequest:)]) {
+    if ([self.dispatcher respondsToSelector:@selector(notificationStore)] && [self.dispatcher.notificationStore respondsToSelector:@selector(coalescedNotificationForRequest:)]) {
         count = 0;
         NSMutableArray *coalescedNotifications = [NSMutableArray new];
         for (NCNotificationRequest *req in requests) {
@@ -269,7 +269,7 @@
 -(NSArray *)allRequestsForBundleIdentifier:(NSString *)bundleIdentifier {
     NSArray *requests = [self requestsForBundleIdentifier:bundleIdentifier];
 
-    if ([self.dispatcher.notificationStore respondsToSelector:@selector(coalescedNotificationForRequest:)]) {
+    if ([self.dispatcher respondsToSelector:@selector(notificationStore)] && [self.dispatcher.notificationStore respondsToSelector:@selector(coalescedNotificationForRequest:)]) {
         NSMutableArray *allRequests = [NSMutableArray new];
         NSMutableArray *coalescedNotifications = [NSMutableArray new];
 
@@ -316,7 +316,7 @@
 
 -(id)coalescedNotificationForRequest:(id)req {
     NCCoalescedNotification *coalesced = nil;
-    if ([self.dispatcher.notificationStore respondsToSelector:@selector(coalescedNotificationForRequest:)]) {
+    if ([self.dispatcher respondsToSelector:@selector(notificationStore)] && [self.dispatcher.notificationStore respondsToSelector:@selector(coalescedNotificationForRequest:)]) {
         coalesced = [self.dispatcher.notificationStore coalescedNotificationForRequest:req];
     }
     return coalesced;
