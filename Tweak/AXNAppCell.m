@@ -123,6 +123,8 @@
 }
 
 -(NSString *)getAppName {
+    return [AXNManager sharedInstance].names[self.bundleIdentifier];
+
   SBApplication *app = [[NSClassFromString(@"SBApplicationController") sharedInstance] applicationWithBundleIdentifier:self.bundleIdentifier];
   return app.displayName;
 }
