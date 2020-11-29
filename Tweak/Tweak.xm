@@ -15,6 +15,7 @@ NSInteger selectionStyle;
 NSInteger style;
 NSInteger showByDefault;
 NSInteger alignment;
+NSInteger iconStyle;
 NSInteger verticalPosition;
 NSInteger autoLayout;
 NSInteger yAxis;
@@ -33,6 +34,7 @@ void updateViewConfiguration() {
         [AXNManager sharedInstance].view.showByDefault = showByDefault;
         [AXNManager sharedInstance].view.spacing = spacing;
         [AXNManager sharedInstance].view.alignment = alignment;
+        [AXNManager sharedInstance].view.iconStyle = iconStyle;
     }
 }
 
@@ -719,6 +721,7 @@ void loadPrefs() {
   style = [prefs[@"Style"] intValue] ?: 0;
   showByDefault = [prefs[@"ShowByDefault"] intValue] ?: 0;
   alignment = [prefs[@"Alignment"] intValue] ?: 0;
+  iconStyle = [prefs[@"iconStyle"] intValue] ?: 0;
   verticalPosition = [prefs[@"VerticalPosition"] intValue] ?: 0;
   spacing = [prefs[@"Spacing"] floatValue] ?: 10;
   autoLayout = prefs[@"autoLayout"] != nil ? [prefs[@"autoLayout"] boolValue] : true;

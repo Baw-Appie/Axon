@@ -162,7 +162,9 @@
 -(void)setBundleIdentifier:(NSString *)value {
     _bundleIdentifier = value;
 
-    self.iconView.image = [[AXNManager sharedInstance] getIcon:value rounded:_style == 5];
+    if(self.iconStyle == 0) self.iconView.image = [[AXNManager sharedInstance] getIcon:value rounded:_style == 5];
+    else if(self.iconStyle == 1) self.iconView.image = [[AXNManager sharedInstance] getIcon:value rounded:true];
+    else if(self.iconStyle == 2) self.iconView.image = [[AXNManager sharedInstance] getIcon:value rounded:false];
 
     self.badgeLabel.backgroundColor = [UIColor clearColor];
     if(_style != 4) self.badgeLabel.textColor = [[AXNManager sharedInstance] fallbackColor];

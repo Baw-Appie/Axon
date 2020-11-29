@@ -197,6 +197,44 @@
 			<string>me.nepeta.axon/ReloadPrefs</string>
 		</dict>
 
+
+
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Icon Style</string>
+			<key>isStaticText</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSegmentCell</string>
+			<key>default</key>
+			<integer>0</integer>
+			<key>defaults</key>
+			<string>me.nepeta.axon</string>
+			<key>key</key>
+			<string>iconStyle</string>
+			<key>validValues</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+			</array>
+			<key>validTitles</key>
+			<array>
+				<string>Default</string>
+				<string>Rounded</string>
+				<string>Square</string>
+			</array>
+			<key>alignment</key>
+			<string>3</string>
+			<key>PostNotification</key>
+			<string>me.nepeta.axon/ReloadPrefs</string>
+		</dict>
+
+
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>

@@ -17,6 +17,7 @@
 @property (nonatomic, assign) NSInteger sortingMode;
 @property (nonatomic, assign) NSInteger showByDefault;
 @property (nonatomic, assign) NSInteger alignment;
+@property (nonatomic, assign) NSInteger iconStyle;
 @property (nonatomic, assign) CGFloat spacing;
 
 -(void)refresh;

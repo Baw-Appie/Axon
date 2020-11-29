@@ -95,6 +95,7 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     AXNAppCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"AppCell" forIndexPath:indexPath] ?: [[AXNAppCell alloc] initWithFrame:CGRectMake(0,0,64,64)];
     NSDictionary *dict = self.list[indexPath.row];
+    cell.iconStyle = self.iconStyle;
     cell.darkMode = self.darkMode;
     cell.badgesShowBackground = self.badgesShowBackground;
     cell.bundleIdentifier = dict[@"bundleIdentifier"];
