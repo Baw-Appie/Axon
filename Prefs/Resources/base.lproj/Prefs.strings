@@ -31,6 +31,8 @@
   "DIM" = "Dim others";
   "NONE" = "None";
 
+  "ADD_BLUR" = "Add Blur";
+
   "LOCATION" = "Location";
   "TOP" = "Top";
   "BOTTOM" = "Bottom (Beta)";

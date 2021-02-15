@@ -13,6 +13,7 @@
 @property (nonatomic, assign) BOOL darkMode;
 @property (nonatomic, assign) BOOL showingLatestRequest;
 @property (nonatomic, assign) NSInteger selectionStyle;
+@property (nonatomic, assign) BOOL addBlur;
 @property (nonatomic, assign) NSInteger style;
 @property (nonatomic, assign) NSInteger sortingMode;
 @property (nonatomic, assign) NSInteger showByDefault;

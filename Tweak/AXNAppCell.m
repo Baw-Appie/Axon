@@ -247,7 +247,7 @@
         self.alpha = 0.5;
         self.badgeLabel.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.2];
       }
-      [self addSubview:self.blurView];
+       if (self.addBlur || style == 4 || style == 5) [self addSubview:self.blurView];
       [self addSubview:self.badgeLabel];
       [self addSubview:self.iconView];
     } else {

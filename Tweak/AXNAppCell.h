@@ -49,6 +49,7 @@ typedef NS_OPTIONS(NSUInteger, MTMaterialOptions) {
 @property (nonatomic, retain) NSString *bundleIdentifier;
 @property (nonatomic, assign) NSInteger notificationCount;
 @property (nonatomic, assign) NSInteger selectionStyle;
+@property (nonatomic, assign) BOOL addBlur;
 @property (nonatomic, assign) NSInteger style;
 @property (nonatomic, assign) NSInteger iconStyle;
 @property (nonatomic, assign) BOOL badgesShowBackground;

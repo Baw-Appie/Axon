@@ -102,6 +102,7 @@
     cell.notificationCount = [dict[@"notificationCount"] intValue];
     cell.backgroundColor = [UIColor clearColor];
     cell.selectionStyle = self.selectionStyle;
+    cell.addBlur = self.addBlur;
     cell.selected = [self.selectedBundleIdentifier isEqualToString:cell.bundleIdentifier];
     cell.badgeLabel.hidden = !self.badgesEnabled;
     cell.style = self.style;
