@@ -91,7 +91,7 @@
             [self.badgeLabel.topAnchor constraintEqualToAnchor:self.topAnchor constant:5],
             [self.badgeLabel.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-5],
             [self.badgeLabel.leadingAnchor constraintEqualToAnchor:self.leadingAnchor],
-            [self.badgeLabel.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-5],
+            [self.badgeLabel.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-10],
         ],
         @[  // group rounded
             [self.iconView.topAnchor constraintEqualToAnchor:self.topAnchor constant:8],
@@ -287,9 +287,10 @@
         self.layer.cornerRadius = 10;
         self.badgeLabel.layer.cornerRadius = 8;
       } else if(style == 4) {
+        self.layer.cornerRadius = 10;
         self.badgeLabel.textAlignment = NSTextAlignmentRight;
         self.badgeLabel.backgroundColor = [UIColor clearColor];
-        self.badgeLabel.textColor = [UIColor blackColor];
+        self.badgeLabel.textColor = [UIColor whiteColor];
       } else {
         self.layer.cornerRadius = 18;
         self.alpha = 0.5;
