@@ -8,6 +8,10 @@
     self = [super initWithFrame:frame];
     _style = -1;
 
+    // for some unknown reason AXNView isn't able to set badgesEnabled, so i'm loading it from the preferences
+    NSMutableDictionary* prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/me.nepeta.axon.plist"];
+    self.badgesEnabled = prefs[@"BadgesEnabled"] != nil ? [prefs[@"BadgesEnabled"] boolValue] : true;
+
     UILongPressGestureRecognizer *recognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showMenu:)];
     [self addGestureRecognizer:recognizer];
 
@@ -19,21 +23,24 @@
     self.iconView.translatesAutoresizingMaskIntoConstraints = NO;
     self.iconView.contentMode = UIViewContentModeScaleAspectFit;
 
-    self.badgeLabel = [[UILabel alloc] initWithFrame:frame];
-    self.badgeLabel.font = [UIFont boldSystemFontOfSize:14];
-    self.badgeLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    self.badgeLabel.text = @"0";
-    self.badgeLabel.textColor = [UIColor whiteColor];
-    self.badgeLabel.backgroundColor = [UIColor blackColor];
-    self.badgeLabel.layer.cornerRadius = 10;
-    self.badgeLabel.layer.masksToBounds = YES;
-    self.badgeLabel.textAlignment = NSTextAlignmentCenter;
+    if (self.badgesEnabled) {
+      self.badgeLabel = [[UILabel alloc] initWithFrame:frame];
+      self.badgeLabel.font = [UIFont boldSystemFontOfSize:14];
+      self.badgeLabel.translatesAutoresizingMaskIntoConstraints = NO;
+      self.badgeLabel.text = @"0";
+      self.badgeLabel.textColor = [UIColor whiteColor];
+      self.badgeLabel.backgroundColor = [UIColor blackColor];
+      self.badgeLabel.layer.cornerRadius = 10;
+      self.badgeLabel.layer.masksToBounds = YES;
+      self.badgeLabel.textAlignment = NSTextAlignmentCenter;
+    }
 
     self.blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
     self.blurView.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
     // self.blurView.bounds = self.bounds;
 
-    _styleConstraints = @[
+    if (self.badgesEnabled) {
+      _styleConstraints = @[
         @[  // default
             [self.iconView.topAnchor constraintEqualToAnchor:self.topAnchor constant:5],
             [self.iconView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:10],
@@ -98,7 +105,47 @@
             [self.badgeLabel.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:33],
             [self.badgeLabel.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-7],
         ]
-    ];
+      ];
+    } else if (!self.badgesEnabled) {
+      _styleConstraints = @[
+        @[  // default
+            [self.iconView.topAnchor constraintEqualToAnchor:self.topAnchor constant:10],
+            [self.iconView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:10],
+            [self.iconView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-10],
+            [self.iconView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-10],
+        ],
+        @[  // packed
+            [self.iconView.topAnchor constraintEqualToAnchor:self.topAnchor constant:10],
+            [self.iconView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:10],
+            [self.iconView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-10],
+            [self.iconView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-10],
+        ],
+        @[  // compact
+            [self.iconView.topAnchor constraintEqualToAnchor:self.topAnchor constant:5],
+            [self.iconView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:5],
+            [self.iconView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-5],
+            [self.iconView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-5],
+        ],
+        @[  // tiny
+            [self.iconView.topAnchor constraintEqualToAnchor:self.topAnchor constant:5],
+            [self.iconView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:5],
+            [self.iconView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-5],
+            [self.iconView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-5],
+        ],
+        @[  // group
+            [self.iconView.topAnchor constraintEqualToAnchor:self.topAnchor constant:5],
+            [self.iconView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor],
+            [self.iconView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-28],
+            [self.iconView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-5],
+        ],
+        @[  // group rounded
+            [self.iconView.topAnchor constraintEqualToAnchor:self.topAnchor constant:8],
+            [self.iconView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:3],
+            [self.iconView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-26],
+            [self.iconView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-8],
+        ]
+      ];
+    }
 
     return self;
 }
@@ -234,6 +281,7 @@
     if (style >= [_styleConstraints count] || style < 0) _style = 0;
     else _style = style;
 
+    if (style == 2) self.badgeLabel.layer.cornerRadius = 8;
     if(style == 3 || style == 4 || style == 5) {
       if (style == 3) {
         self.layer.cornerRadius = 10;
@@ -247,12 +295,13 @@
         self.alpha = 0.5;
         self.badgeLabel.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.2];
       }
-       if (self.addBlur || style == 4 || style == 5) [self addSubview:self.blurView];
-      [self addSubview:self.badgeLabel];
+      if (self.addBlur || style == 4 || style == 5) [self addSubview:self.blurView];
+      if (self.badgesEnabled) [self addSubview:self.badgeLabel];
       [self addSubview:self.iconView];
     } else {
+      if (self.addBlur || style == 4 || style == 5) [self addSubview:self.blurView];
       [self addSubview:self.iconView];
-      [self addSubview:self.badgeLabel];
+      if (self.badgesEnabled) [self addSubview:self.badgeLabel];
     }
 
     if (oldStyle != -1) [NSLayoutConstraint deactivateConstraints:_styleConstraints[oldStyle]];

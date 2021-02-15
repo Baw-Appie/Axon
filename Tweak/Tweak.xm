@@ -2,7 +2,6 @@
 #import "AXNManager.h"
 
 NSDictionary *prefs;
-BOOL dpkgInvalid = NO;
 BOOL initialized = NO;
 BOOL enabled;
 BOOL vertical;

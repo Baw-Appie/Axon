@@ -104,7 +104,7 @@
     cell.selectionStyle = self.selectionStyle;
     cell.addBlur = self.addBlur;
     cell.selected = [self.selectedBundleIdentifier isEqualToString:cell.bundleIdentifier];
-    cell.badgeLabel.hidden = !self.badgesEnabled;
+    // cell.badgesEnabled = self.badgesEnabled;
     cell.style = self.style;
 
     if (cell.selected) {
@@ -156,13 +156,24 @@
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    switch (self.style) {
-        case 1: return CGSizeMake(64, 64);
-        case 2: return CGSizeMake(48, 48);
-        case 3: return CGSizeMake(40, 64);
-        case 4: return CGSizeMake(60, 30);
-        case 5: return CGSizeMake(60, 36);
-        default: return CGSizeMake(64, 90);
+    if (self.badgesEnabled) {
+        switch (self.style) {
+            case 1: return CGSizeMake(64, 64);
+            case 2: return CGSizeMake(48, 48);
+            case 3: return CGSizeMake(40, 64);
+            case 4: return CGSizeMake(60, 30);
+            case 5: return CGSizeMake(60, 36);
+            default: return CGSizeMake(64, 90);
+        }
+    } else if (!self.badgesEnabled) {
+        switch (self.style) {
+            case 1: return CGSizeMake(64, 64);
+            case 2: return CGSizeMake(48, 48);
+            case 3: return CGSizeMake(41, 41);
+            case 4: return CGSizeMake(60, 30);
+            case 5: return CGSizeMake(60, 36);
+            default: return CGSizeMake(64, 64);
+        }
     }
 }
 
