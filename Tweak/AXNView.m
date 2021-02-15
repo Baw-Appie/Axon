@@ -172,7 +172,7 @@
             case 3: return CGSizeMake(41, 41);
             case 4: return CGSizeMake(60, 30);
             case 5: return CGSizeMake(60, 36);
-            default: return CGSizeMake(64, 64);
+            default: return CGSizeMake(64, 6);
         }
     }
 }

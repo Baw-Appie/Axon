@@ -134,14 +134,14 @@
         ],
         @[  // group
             [self.iconView.topAnchor constraintEqualToAnchor:self.topAnchor constant:5],
-            [self.iconView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor],
-            [self.iconView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-28],
+            [self.iconView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:5],
+            [self.iconView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-5],
             [self.iconView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-5],
         ],
         @[  // group rounded
             [self.iconView.topAnchor constraintEqualToAnchor:self.topAnchor constant:8],
-            [self.iconView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:3],
-            [self.iconView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-26],
+            [self.iconView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:8],
+            [self.iconView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-8],
             [self.iconView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-8],
         ]
       ];
