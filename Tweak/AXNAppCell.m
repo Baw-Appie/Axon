@@ -234,8 +234,11 @@
     if (style >= [_styleConstraints count] || style < 0) _style = 0;
     else _style = style;
 
-    if(style == 4 || style == 5) {
-      if(style == 4) {
+    if(style == 3 || style == 4 || style == 5) {
+      if (style == 3) {
+        self.layer.cornerRadius = 10;
+        self.badgeLabel.layer.cornerRadius = 8;
+      } else if(style == 4) {
         self.badgeLabel.textAlignment = NSTextAlignmentRight;
         self.badgeLabel.backgroundColor = [UIColor clearColor];
         self.badgeLabel.textColor = [UIColor blackColor];
