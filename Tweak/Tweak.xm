@@ -2,7 +2,6 @@
 #import "AXNManager.h"
 
 NSDictionary *prefs;
-BOOL dpkgInvalid = NO;
 BOOL initialized = NO;
 BOOL enabled;
 BOOL vertical;
@@ -12,6 +11,7 @@ BOOL hapticFeedback;
 BOOL darkMode;
 NSInteger sortingMode;
 NSInteger selectionStyle;
+BOOL addBlur;
 NSInteger style;
 NSInteger showByDefault;
 NSInteger alignment;
@@ -28,6 +28,7 @@ void updateViewConfiguration() {
         [AXNManager sharedInstance].view.badgesEnabled = badgesEnabled;
         [AXNManager sharedInstance].view.badgesShowBackground = badgesShowBackground;
         [AXNManager sharedInstance].view.selectionStyle = selectionStyle;
+        [AXNManager sharedInstance].view.addBlur = addBlur;
         [AXNManager sharedInstance].view.sortingMode = sortingMode;
         [AXNManager sharedInstance].view.style = style;
         [AXNManager sharedInstance].view.darkMode = darkMode;
@@ -718,6 +719,7 @@ void loadPrefs() {
   darkMode = prefs[@"DarkMode"] != nil ? [prefs[@"DarkMode"] boolValue] : false;
   sortingMode = [prefs[@"SortingMode"] intValue] ?: 0;
   selectionStyle = [prefs[@"SelectionStyle"] intValue] ?: 0;
+  addBlur = prefs[@"addBlur"] != nil ? [prefs[@"addBlur"] boolValue] : false;
   style = [prefs[@"Style"] intValue] ?: 0;
   showByDefault = [prefs[@"ShowByDefault"] intValue] ?: 0;
   alignment = [prefs[@"Alignment"] intValue] ?: 0;
