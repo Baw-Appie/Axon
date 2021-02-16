@@ -11,6 +11,7 @@
     // for some unknown reason AXNView isn't able to set badgesEnabled, so i'm loading it from the preferences
     NSMutableDictionary* prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/me.nepeta.axon.plist"];
     self.badgesEnabled = prefs[@"BadgesEnabled"] != nil ? [prefs[@"BadgesEnabled"] boolValue] : true;
+    // self.darkMode = prefs[@"DarkMode"] != nil ? [prefs[@"DarkMode"] boolValue] : false;
 
     UILongPressGestureRecognizer *recognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showMenu:)];
     [self addGestureRecognizer:recognizer];
@@ -309,25 +310,6 @@
     [NSLayoutConstraint activateConstraints:_styleConstraints[_style]];
     [self setNeedsLayout];
 }
--(void)setDarkMode:(BOOL)darkMode {
-    if (_darkMode == darkMode) return;
-
-    CGRect frame = self.blurView.frame;
-    if(darkMode) {
-      id materialView = objc_getClass("MTMaterialView");
-      if([materialView respondsToSelector:@selector(materialViewWithRecipe:options:)]) {
-        self.blurView = [materialView materialViewWithRecipe:MTMaterialRecipeNotifications options:MTMaterialOptionsBlur];
-      } else {
-        self.blurView = [materialView materialViewWithRecipe:MTMaterialRecipeNotifications configuration:1];
-      }
-      self.blurView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.45];
-    } else self.blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
-    self.blurView.frame = frame;
-    self.badgeLabel.textColor = darkMode ? [UIColor whiteColor] : [UIColor blackColor];
-    self.badgeLabel.alpha = 0.4f;
-
-    [self setNeedsDisplay];
-}
 
 -(void)setSelected:(BOOL)selected {
     [super setSelected:selected];
@@ -342,7 +324,7 @@
                     break;
                 default:
                     if (!self.darkMode) self.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.5];
-                    else self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
+                    else if (self.darkMode) self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
             }
         } completion:NULL];
     } else {
