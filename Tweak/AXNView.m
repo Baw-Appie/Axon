@@ -175,6 +175,7 @@
             default: return CGSizeMake(64, 6);
         }
     }
+    return CGSizeMake(0, 0);
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
