@@ -11,7 +11,6 @@
     // for some unknown reason AXNView isn't able to set badgesEnabled, so i'm loading it from the preferences
     NSMutableDictionary* prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/me.nepeta.axon.plist"];
     self.badgesEnabled = prefs[@"BadgesEnabled"] != nil ? [prefs[@"BadgesEnabled"] boolValue] : true;
-    // self.darkMode = prefs[@"DarkMode"] != nil ? [prefs[@"DarkMode"] boolValue] : false;
 
     UILongPressGestureRecognizer *recognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showMenu:)];
     [self addGestureRecognizer:recognizer];
