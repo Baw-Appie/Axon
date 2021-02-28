@@ -111,7 +111,7 @@
         [collectionView selectItemAtIndexPath:indexPath animated:NO scrollPosition:UICollectionViewScrollPositionNone];
     }
 
-    if (self.style == 5) cell.alpha = 0.5;
+    // if (self.style == 5) cell.alpha = 0.5;
 
     return cell;
 }
