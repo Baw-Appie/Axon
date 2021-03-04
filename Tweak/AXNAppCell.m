@@ -310,6 +310,26 @@
     [self setNeedsLayout];
 }
 
+-(void)setDarkMode:(BOOL)darkMode {
+    if (_darkMode == darkMode) return;
+
+    CGRect frame = self.blurView.frame;
+    if(darkMode) {
+      id materialView = objc_getClass("MTMaterialView");
+      if([materialView respondsToSelector:@selector(materialViewWithRecipe:options:)]) {
+        self.blurView = [materialView materialViewWithRecipe:MTMaterialRecipeNotifications options:MTMaterialOptionsBlur];
+      } else {
+        self.blurView = [materialView materialViewWithRecipe:MTMaterialRecipeNotifications configuration:1];
+      }
+      self.blurView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.45];
+    } else self.blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
+    self.blurView.frame = frame;
+    self.badgeLabel.textColor = darkMode ? [UIColor whiteColor] : [UIColor blackColor];
+    self.badgeLabel.alpha = 0.4f;
+
+    [self setNeedsDisplay];
+}
+
 -(void)setSelected:(BOOL)selected {
     [super setSelected:selected];
     if(self.selectionStyle == 2) return;
