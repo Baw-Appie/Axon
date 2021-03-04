@@ -215,7 +215,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Icon Style</string>
+			<string>ICON_STYLE</string>
 			<key>isStaticText</key>
 			<true/>
 		</dict>
@@ -236,9 +236,9 @@
 			</array>
 			<key>validTitles</key>
 			<array>
-				<string>Default</string>
-				<string>Rounded</string>
-				<string>Square</string>
+				<string>DEFAULT</string>
+				<string>ROUNDED</string>
+				<string>SQUARE</string>
 			</array>
 			<key>alignment</key>
 			<string>3</string>

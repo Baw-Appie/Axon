@@ -6,7 +6,7 @@
   "ENABLED" = "Enabled";
   "HAPTIC_FEEDBACK" = "Haptic feedback";
   "DARK_MODE" = "Dark mode";
-  
+
   "SYSTEM" = "System";
   "LIGHT" = "Light";
   "DARK" = "Dark";
@@ -29,6 +29,10 @@
   "BY_DATE" = "Latest";
   "BY_NAME" = "By app name";
   "BY_COUNT" = "By count";
+
+  "ICON_STYLE" = "Icon style";
+  "ROUNDED" = "Rounded";
+  "SQUARE" = "Square";
 
   "SELECTION_STYLE" = "Selection style";
   "BACKGROUND" = "Add background";
