@@ -54,7 +54,7 @@ typedef NS_OPTIONS(NSUInteger, MTMaterialOptions) {
 @property (nonatomic, assign) NSInteger iconStyle;
 @property (nonatomic, assign) BOOL badgesEnabled;
 @property (nonatomic, assign) BOOL badgesShowBackground;
-@property (nonatomic, assign) BOOL darkMode;
+@property (nonatomic, assign) NSInteger darkMode;
 @property (nonatomic, assign) BOOL isSetupComplete;
 
 @end

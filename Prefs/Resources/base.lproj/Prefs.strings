@@ -6,6 +6,10 @@
   "ENABLED" = "Enabled";
   "HAPTIC_FEEDBACK" = "Haptic feedback";
   "DARK_MODE" = "Dark mode";
+  
+  "SYSTEM" = "System";
+  "LIGHT" = "Light";
+  "DARK" = "Dark";
 
   "STYLE" = "Style";
   "DEFAULT" = "Default";

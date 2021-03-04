@@ -4,12 +4,31 @@
 
 @implementation AXNAppCell
 
+NSMutableDictionary* prefs;
+
+UIView *getBlurView(CGRect frame) {
+    NSInteger darkModeTmp = [prefs[@"DarkMode"] intValue] ?: 0;
+    UIView *blurView;
+    if(darkModeTmp == 0) {
+        id materialView = objc_getClass("MTMaterialView");
+        if([materialView respondsToSelector:@selector(materialViewWithRecipe:options:)]) blurView = [materialView materialViewWithRecipe:MTMaterialRecipeNotifications options:MTMaterialOptionsBlur];
+        else blurView = [materialView materialViewWithRecipe:MTMaterialRecipeNotifications configuration:1];
+        blurView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.45];
+    } else if(darkModeTmp == 1) {
+        blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
+    } else if(darkModeTmp == 2) {
+        blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleDark]];
+    }
+    blurView.frame = frame;
+    return blurView;
+}
+
 -(id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     _style = -1;
 
     // for some unknown reason AXNView isn't able to set badgesEnabled, so i'm loading it from the preferences
-    NSMutableDictionary* prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/me.nepeta.axon.plist"];
+    prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/me.nepeta.axon.plist"];
     self.badgesEnabled = prefs[@"BadgesEnabled"] != nil ? [prefs[@"BadgesEnabled"] boolValue] : true;
 
     UILongPressGestureRecognizer *recognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showMenu:)];
@@ -35,8 +54,7 @@
       self.badgeLabel.textAlignment = NSTextAlignmentCenter;
     }
 
-    self.blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
-    self.blurView.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
+    self.blurView = getBlurView(CGRectMake(0, 0, frame.size.width, frame.size.height));
     // self.blurView.bounds = self.bounds;
 
     if (self.badgesEnabled) {
@@ -310,20 +328,10 @@
     [self setNeedsLayout];
 }
 
--(void)setDarkMode:(BOOL)darkMode {
+-(void)setDarkMode:(NSInteger)darkMode {
     if (_darkMode == darkMode) return;
 
-    CGRect frame = self.blurView.frame;
-    if(darkMode) {
-      id materialView = objc_getClass("MTMaterialView");
-      if([materialView respondsToSelector:@selector(materialViewWithRecipe:options:)]) {
-        self.blurView = [materialView materialViewWithRecipe:MTMaterialRecipeNotifications options:MTMaterialOptionsBlur];
-      } else {
-        self.blurView = [materialView materialViewWithRecipe:MTMaterialRecipeNotifications configuration:1];
-      }
-      self.blurView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.45];
-    } else self.blurView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
-    self.blurView.frame = frame;
+    self.blurView = getBlurView(self.blurView.frame);
     self.badgeLabel.textColor = darkMode ? [UIColor whiteColor] : [UIColor blackColor];
     self.badgeLabel.alpha = 0.4f;
 

@@ -8,7 +8,7 @@ BOOL vertical;
 BOOL badgesEnabled;
 BOOL badgesShowBackground;
 BOOL hapticFeedback;
-BOOL darkMode;
+NSInteger darkMode;
 NSInteger sortingMode;
 NSInteger selectionStyle;
 BOOL addBlur;
@@ -716,7 +716,7 @@ void loadPrefs() {
   hapticFeedback = prefs[@"HapticFeedback"] != nil ? [prefs[@"HapticFeedback"] boolValue] : true;
   badgesEnabled = prefs[@"BadgesEnabled"] != nil ? [prefs[@"BadgesEnabled"] boolValue] : true;
   badgesShowBackground = prefs[@"BadgesShowBackground"] != nil ? [prefs[@"BadgesShowBackground"] boolValue] : true;
-  darkMode = prefs[@"DarkMode"] != nil ? [prefs[@"DarkMode"] boolValue] : false;
+  darkMode = [prefs[@"DarkMode"] intValue] ?: 0;
   sortingMode = [prefs[@"SortingMode"] intValue] ?: 0;
   selectionStyle = [prefs[@"SelectionStyle"] intValue] ?: 0;
   addBlur = prefs[@"addBlur"] != nil ? [prefs[@"addBlur"] boolValue] : false;
