@@ -1,0 +1,66 @@
+{
+  "ENABLED_RESPRING" = "활성화 (리스프링 필요)";
+  "VERTICAL" = "수직 모드";
+  "VERTICAL_INFO" = "Axon을 90도 회전시킵니다. 알림의 한쪽이 작게 보이게 됩니다. 리스프링 필요. 실험적 기능.";
+  "VERTICAL_RESPRING" = "수직 모드 (리스프링 필요)";
+  "ENABLED" = "활성화";
+  "HAPTIC_FEEDBACK" = "햅틱 피드백";
+  "DARK_MODE" = "다크 모드";
+  
+  "SYSTEM" = "시스템";
+  "LIGHT" = "라이트";
+  "DARK" = "다크";
+
+  "STYLE" = "스타일";
+  "DEFAULT" = "기본";
+  "PACKED" = "압축된";
+  "COMPACT" = "컴팩트";
+  "TINY" = "작은";
+  "GROUP" = "그룹 (베타, 리스프링 필요)";
+  "ROUNEDED_GROUP" = "동그란 그룹 (베타, 리스프링 필요)";
+
+  "SHOW" = "기본으로 표시";
+  "NOTHING" = "안함";
+  "LATEST_NOTIFICATION" = "마지막 알림";
+  "FIRST_SECTION" = "첫 섹션";
+  "SELECTED_SECTION" = "선택된 섹션";
+
+  "SORTING" = "정렬";
+  "BY_DATE" = "최신순";
+  "BY_NAME" = "앱 이름순";
+  "BY_COUNT" = "갯수순";
+
+  "ICON_STYLE" = "아이콘 스타일";
+  "ROUNDED" = "둥글게";
+  "SQUARE" = "각지게";
+
+  "SELECTION_STYLE" = "선택 스타일";
+  "BACKGROUND" = "배경 추가";
+  "DIM" = "다른것 어둡게";
+  "NONE" = "없음";
+
+  "ADD_BLUR" = "흐림 효과 추가";
+
+  "LOCATION" = "위치";
+  "TOP" = "위";
+  "BOTTOM" = "아래 (베타)";
+
+  "BADGES" = "뱃지";
+  "SHOW_BACKGROUND" = "배경 보이기";
+
+  "SPACING" = "간격";
+
+  "ALIGNMENT" = "정렬";
+  "LEFT" = "왼쪽";
+  "CENTER" = "중앙";
+  "RIGHT" = "오른쪽";
+
+  "CREDITS_1" = "Ahmed Bousrih";
+  "CREDITS_1_INFO" = "아이콘과 배너 디자인";
+
+  "RESPRING" = "리스프링";
+  "DEBUG" = "디버그 옵션";
+  "SOURCE_CODE" = "소스 코드";
+  "DONATE_TO_NEPETA" = "Nepeta에게 후원";
+  "SUPPORT_ME" = "저를 지원해주세요!";
+}
